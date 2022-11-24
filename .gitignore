@@ -1,0 +1,9 @@
+# Temp files for editor config
+/.vs
+
+# Compiled files
+/bin
+/obj
+
+# File containing the token that must stay private
+token.txt
