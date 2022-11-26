@@ -31,11 +31,21 @@ internal partial class BigBrother
                 quoteChannel: 1043646501655683072,
                 accessLevels: new Dictionary<ulong, AccessLevel>()
                 {
+                    // 22
                     [315827580869804042] = AccessLevel.Admin,
                 },
                 eventFile: "Hoffnunglos_allein.csv"),
             // UNO
-            //[902512847207170129] = new GuildSettings(),
+            [902512847207170129] = new GuildSettings(
+                quoteChannel: 943492494656684103,
+                accessLevels: new Dictionary<ulong, AccessLevel>()
+                {
+                    // 22
+                    [315827580869804042] = AccessLevel.Admin,
+                    // Magali
+                    [284210389070381057] = AccessLevel.Moderator,
+                },
+                eventFile: "UNO.csv"),
         };
     }
 }

@@ -76,12 +76,14 @@ internal class Battle
     private List<Event> events;
 
     public bool IsActive;
+    public bool IsPlaying;
     private List<Player> players;
     private List<Player> alivePlayers;
 
     public Battle(string filename)
     {
         IsActive = false;
+        IsPlaying = false;
         players = new List<Player>();
         alivePlayers = new List<Player>();
 
@@ -102,23 +104,46 @@ internal class Battle
         }
     }
 
-    public void StartGame()
+    public IEnumerable<string> StartGame()
     {
-        IsActive = true;
-        players.Clear();
-        alivePlayers.Clear();
+        // TODO
+        if (IsActive)
+        {
+            yield return "";   
+        }
+        else
+        {
+            IsActive = true;
+            players.Clear();
+            alivePlayers.Clear();
+            yield return "";
+        }
     }
 
-    public void JoinGame(IUser player)
+    public IEnumerable<string> JoinGame(IUser player)
     {
-        Player newPlayer = new Player(player.Id, player.Username);
-        players.Add(newPlayer);
-        alivePlayers.Add(newPlayer);
+        // TODO
+        if (!IsActive)
+        {
+            yield return "";
+        }
+        else if (IsPlaying)
+        {
+            yield return "";
+        }
+        else
+        {
+            Player newPlayer = new Player(player.Id, player.Username);
+            players.Add(newPlayer);
+            alivePlayers.Add(newPlayer);
+            yield return "";
+        }
     }
 
     public IEnumerable<string> PlayGame()
     {
-        while (IsActive && alivePlayers.Count > 1)
+        IsPlaying = true;
+        while (IsPlaying && alivePlayers.Count > 1)
         {
             Player activePlayer = alivePlayers[random.Next(0, alivePlayers.Count)];
             if (random.Next(0, 2) == 0)
@@ -139,6 +164,7 @@ internal class Battle
     public void StopGame()
     {
         IsActive = false;
+        IsPlaying = false;
     }
 }
 
@@ -149,10 +175,10 @@ internal partial class BigBrother
 
     private void InitBattle()
     {
-        commands.Add(new Command("[Bb]attle", StartBattle));
-        commands.Add(new Command("[Jj]oin[Bb]attle", JoinBattle));
-        commands.Add(new Command("[Pp]lay[Bb]attle", PlayBattle));
-        commands.Add(new Command("[Ss]top[Bb]attle", StopBattle, AccessLevel.Moderator));
+        commands.Add(new Command("battle", "` -> start a new battle for players to join", StartBattle));
+        commands.Add(new Command("joinBattle", "` -> Join the current battle", JoinBattle));
+        commands.Add(new Command("playBattle", "` -> Close the current battle to new players and starts the game", PlayBattle));
+        commands.Add(new Command("stopBattle", "` -> Stop the current battle", StopBattle, AccessLevel.Moderator));
     }
 
     private Battle? GetBattle(IMessage message)
@@ -175,11 +201,8 @@ internal partial class BigBrother
             return;
         }
 
-        if (battle.IsActive)
-        {
-            await SendMessage(message.Channel, "This game is ");
-            return;
-        }
+        foreach (string thing in battle.StartGame())
+            await SendMessage(message.Channel, thing);
     }
 
     private async Task JoinBattle(IMessage message, GroupCollection args)
@@ -191,25 +214,14 @@ internal partial class BigBrother
             return;
         }
 
-        if (!battle.IsActive)
-        {
-            await SendMessage(message.Channel, "");
-            return;
-        }
-
-        battle.JoinGame(message.Author);
-        await SendMessage(message.Channel, "");
+        foreach (string thing in battle.JoinGame(message.Author))
+            await SendMessage(message.Channel, thing);
     }
 
     private async Task PlayBattle(IMessage message, GroupCollection args)
     {
         Battle? battle = GetBattle(message);
         if (battle == null)
-        {
-            return;
-        }
-
-        if (!battle.IsActive)
         {
             await SendMessage(message.Channel, "");
             return;
@@ -223,11 +235,6 @@ internal partial class BigBrother
     {
         Battle? battle = GetBattle(message);
         if (battle == null)
-        {
-            return;
-        }
-
-        if (!battle.IsActive)
         {
             await SendMessage(message.Channel, "");
             return;

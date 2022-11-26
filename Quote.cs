@@ -9,8 +9,8 @@ internal partial class BigBrother
 
     private void InitQuote()
     {
-        commands.Add(new Command("[Rr]eload[Qq]uotes", LoadQuotes, AccessLevel.Moderator));
-        commands.Add(new Command("[Qq]uote", Quote));
+        commands.Add(new Command("reloadQuotes", "` -> This is quite explicit", LoadQuotes, AccessLevel.Moderator));
+        commands.Add(new Command("quote", "` -> Display a random quote from the quote channel", Quote));
     }
 
     private async Task LoadQuotes(IMessage message, GroupCollection args)
@@ -54,6 +54,5 @@ internal partial class BigBrother
         }
 
         await SendMessage(message.Channel, quotes[guild.Id]![random.Next(0, quotes[guild.Id]!.Count)]);
-
     }
 }

@@ -12,8 +12,6 @@ internal partial class BigBrother
 
     private IMessageChannel? logChannel;
 
-    private List<Command> commands;
-
     private Random random = new Random();
 
     public BigBrother(string tokenFile)
@@ -31,10 +29,7 @@ internal partial class BigBrother
         InitSettings();
         InitGuildSettings();
 
-        InitDice();
-        InitQuote();
-        InitBattle();
-        InitHangman();
+        InitAllCommands();
     }
 
     public async Task Run()

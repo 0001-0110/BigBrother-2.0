@@ -30,7 +30,7 @@ internal partial class BigBrother
 
     private async Task DebugLog(string logMessage)
     {
-        await SendMessage(logChannel, logMessage);
+        await SendMessage(logChannel, $"```\n{logMessage}```");
     }
 
     private async Task DeleteMessage(IMessage message)

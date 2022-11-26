@@ -45,9 +45,9 @@ internal partial class BigBrother
 
     private void InitHangman()
     {
-        startHangman = new Command("[Hh]angman", StartHangman);
+        startHangman = new Command("hangman", "` -> starts a new game of hangman",StartHangman);
         commands.Add(startHangman);
-        guessLetter = new Command("[Gg]uess", "([a-zA-Z])", GuessLetter);
+        guessLetter = new Command("guess", "([a-zA-Z])", "<letter>` -> guess a new letter for hangman", GuessLetter);
         commands.Add(guessLetter);
         // TODO add stop
     }
