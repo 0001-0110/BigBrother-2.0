@@ -1,4 +1,6 @@
 ﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using System.Text.RegularExpressions;
 
 enum AccessLevel
@@ -12,8 +14,8 @@ enum AccessLevel
 
 internal class Command
 {
-    private readonly static char prefix = '!';
-    private readonly static string argPrefix = "--";
+    public readonly static char Prefix = '!';
+    public readonly static string ArgPrefix = "--";
 
     public string Name;
     private Regex commandRegex;
@@ -27,14 +29,20 @@ internal class Command
     public Command(string name, string argsRegex, Func<IMessage, GroupCollection, Task> function, AccessLevel accessLevel = AccessLevel.Standard)
     {
         Name = name;
-        string prefixedCommand = $"^{prefix}{name}";
+        string prefixedCommand = $"^{Prefix}{name}";
         commandRegex = new Regex(prefixedCommand);
         if (argsRegex.Length == 0)
-            commandRegexArgs = new Regex($"{prefixedCommand} {argsRegex}$");
-        else
             commandRegexArgs = new Regex($"{prefixedCommand}$");
+        else
+            // " ?" between the command and the args to account for the space only if there is given args
+            commandRegexArgs = new Regex($"{prefixedCommand} ?{argsRegex}$");
         execute = function;
         AccessLevel = accessLevel;
+    }
+
+    public override string ToString()
+    {
+        return Name;
     }
 
     public async Task<bool> TryMatch(IMessage message, GuildSettings guildSettings)
@@ -42,14 +50,41 @@ internal class Command
         if (!commandRegex.IsMatch(message.Content))
             return false;
 
-        Match match = commandRegex.Match(message.Content);
+        // TODO InvalidUse
+        if (!commandRegexArgs.IsMatch(message.Content))
+        {
+            await InvalidUse();
+            return true;
+        }
+
+        Match match = commandRegexArgs.Match(message.Content);
 
         AccessLevel accessLevel = guildSettings.AccessLevels.ContainsKey(message.Author.Id) ? guildSettings.AccessLevels[message.Author.Id] : 0;
         if (accessLevel < this.AccessLevel)
-            return false;
+            return true;
 
         await execute(message, match.Groups);
 
         return true;
+    }
+
+    public async Task InvalidUse()
+    {
+
+    }
+}
+
+internal partial class BigBrother
+{
+    private async Task CommandReceived(SocketMessage message)
+    {
+        foreach (Command command in commands)
+        {
+            SocketGuild? guild = (message.Channel as SocketGuildChannel)?.Guild;
+            if (guild == null || !guildSettings.ContainsKey(guild.Id))
+                throw new Exception("Guild was not found");
+            if (await command.TryMatch(message, guildSettings[guild.Id]))
+                return;
+        }
     }
 }

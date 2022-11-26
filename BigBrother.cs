@@ -3,6 +3,8 @@ using Discord.WebSocket;
 
 internal partial class BigBrother
 {
+    private string tokenFile;
+
     private bool IsRunning;
     private DiscordSocketClient client;
     private Settings settings;
@@ -10,37 +12,49 @@ internal partial class BigBrother
 
     private IMessageChannel? logChannel;
 
-    public BigBrother()
+    private List<Command> commands;
+
+    private Random random = new Random();
+
+    public BigBrother(string tokenFile)
     {
-        client = new DiscordSocketClient();
+        this.tokenFile = tokenFile;
+
+        client = new DiscordSocketClient(
+            new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All });
         client.Log += Log;
         client.Ready += ClientReady;
-        // TODO
-        //client.MessageReceived += 
+        client.MessageReceived += MessageReceived;
+
+        commands = new List<Command>();
 
         InitSettings();
         InitGuildSettings();
 
+        InitDice();
+        InitQuote();
         InitBattle();
         InitHangman();
     }
 
-    public async Task Run(string tokenFile)
+    public async Task Run()
     {
         IsRunning = true;
 
-        await Connect(tokenFile);
+        await Connect();
 
         while (IsRunning)
             await Task.Delay(5000);
+        await client.LogoutAsync();
+        await client.StopAsync();
     }
 
     private async Task Log(LogMessage log)
     {
-        await SendMessage(logChannel, log.ToString());
+        await SendMessage(logChannel, $"```cs\n{log}```");
     }
 
-    private async Task Connect(string tokenFile)
+    private async Task Connect()
     {
         string token;
         using (StreamReader file = new StreamReader(tokenFile))

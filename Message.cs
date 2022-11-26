@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 using System.Text.RegularExpressions;
 
 internal partial class BigBrother
@@ -35,5 +36,22 @@ internal partial class BigBrother
     private async Task DeleteMessage(IMessage message)
     {
         await message.DeleteAsync();
+    }
+
+    private async Task MessageReceived(SocketMessage messageReceived)
+    {
+        // To avoid confusion when multiple instances of this function are runnning at the same time
+        SocketMessage message = messageReceived;
+        Console.WriteLine($"message: {message.Content}");
+
+        // Ignore its own messages
+        if (message.Author.Id == client.CurrentUser.Id)
+            return;
+
+        if (message.Content.StartsWith(Command.Prefix))
+        {
+            await CommandReceived(message);
+            return;
+        }
     }
 }

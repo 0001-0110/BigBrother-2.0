@@ -1,16 +1,14 @@
 ﻿internal class GuildSettings
 {
-    public ulong Id;
-
     public Dictionary<ulong, AccessLevel>? AccessLevels;
 
     public bool BotChannelOnly;
-    public ulong BotChannel;
-    public ulong QuoteChannel;
+    public ulong? BotChannel;
+    public ulong? QuoteChannel;
 
     public string? EventsFile;
 
-    public GuildSettings(ulong quoteChannel = 0, ulong botChannel = 0, Dictionary<ulong, AccessLevel>? accessLevels = null, string? eventFile = null)
+    public GuildSettings(ulong? quoteChannel = null, ulong? botChannel = null, Dictionary<ulong, AccessLevel>? accessLevels = null, string? eventFile = null)
     {
         AccessLevels = accessLevels;
 

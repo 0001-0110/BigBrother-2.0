@@ -144,31 +144,25 @@ internal class Battle
 
 internal partial class BigBrother
 {
-    private const string EVENTFOLDER = "C:\\Users\\remi\\OneDrive\\Documents\\travail\\Prog\\C#\\BigBrother\\BigBrother\\Data\\";
-
-    private Command startBattle;
-    private Command joinBattle;
-    private Command playBattle;
-    private Command stopBattle;
-
+    private const string EVENTFOLDER = "C:\\Users\\remi\\OneDrive\\Documents\\Travail\\Prog\\C#\\BigBrother\\BigBrother\\Data";
     private Dictionary<ulong, Battle> battles = new Dictionary<ulong, Battle>() { };
 
     private void InitBattle()
     {
-        startBattle = new Command("[Bb]attle", StartBattle);
-        joinBattle = new Command("[Jj]oin[Bb]attle", JoinBattle);
-        playBattle = new Command("[Pp]lau[Bb]attle", PlayBattle);
-        stopBattle = new Command("[Ss]top[Bb]attle", StopBattle);
+        commands.Add(new Command("[Bb]attle", StartBattle));
+        commands.Add(new Command("[Jj]oin[Bb]attle", JoinBattle));
+        commands.Add(new Command("[Pp]lay[Bb]attle", PlayBattle));
+        commands.Add(new Command("[Ss]top[Bb]attle", StopBattle, AccessLevel.Moderator));
     }
 
     private Battle? GetBattle(IMessage message)
     {
-        SocketGuild? guild = (message.Channel as SocketGuildChannel)?.Guild;
+        SocketGuild? guild = GetGuild(message.Channel);
         if (guild == null)
             throw new Exception("Guild was not found");
         if (!battles.ContainsKey(guild.Id))
             if (guildSettings[guild.Id].EventsFile != null)
-                battles[guild.Id] = new Battle($"{EVENTFOLDER}/{guildSettings[guild.Id].EventsFile}");
+                battles[guild.Id] = new Battle($"{EVENTFOLDER}\\{guildSettings[guild.Id].EventsFile}");
         return battles[guild.Id];
     }
 
@@ -177,6 +171,7 @@ internal partial class BigBrother
         Battle? battle = GetBattle(message);
         if (battle == null)
         {
+            await SendMessage(message.Channel, "Sadly, battles are not available on this server");
             return;
         }
 

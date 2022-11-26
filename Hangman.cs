@@ -46,16 +46,19 @@ internal partial class BigBrother
     private void InitHangman()
     {
         startHangman = new Command("[Hh]angman", StartHangman);
+        commands.Add(startHangman);
         guessLetter = new Command("[Gg]uess", "([a-zA-Z])", GuessLetter);
+        commands.Add(guessLetter);
+        // TODO add stop
     }
 
     private async Task StartHangman(IMessage message, GroupCollection args)
     {
-
+        return;
     }
 
     private async Task GuessLetter(IMessage message, GroupCollection args)
     {
-
+        return;
     }
 }

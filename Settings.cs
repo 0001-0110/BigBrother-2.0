@@ -22,8 +22,8 @@ internal partial class BigBrother
     {
         settings = new Settings(
             1044351592515768431,
-            ActivityType.Watching,
-            "you"
+            ActivityType.Playing,
+            "Visual Studio"
             );
     }
 }
