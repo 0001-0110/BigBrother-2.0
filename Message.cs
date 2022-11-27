@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 internal partial class BigBrother
 {
-    private static Regex replaceIds = new Regex("{([1-9]*)}");
+    private static Regex replaceIds = new Regex("{([0-9]*)}");
 
     private async Task SendMessage(ulong channelId, string message, bool isTTS=false)
     {
@@ -18,12 +18,13 @@ internal partial class BigBrother
             return;
 
         Match match = replaceIds.Match(message);
-        for (int i = 0; i < match.Groups.Count; i++)
+        for (int i = 1; i < match.Groups.Count; i++)
         {
             var idString = match.Groups[i].Value;
             ulong id;
             if (ulong.TryParse(idString, out id))
-                message = replaceIds.Replace(idString, MentionUtils.MentionUser(id));
+                // TODO make this prettier (restructure this wild string)
+                message = Regex.Replace(message, "{([0-9]*)}", MentionUtils.MentionUser(id));
         }
         await channel.SendMessageAsync(message, isTTS);
     }

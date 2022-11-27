@@ -1,7 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.WebSocket;
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 enum AccessLevel
@@ -68,13 +66,11 @@ internal class Command
 
 internal partial class BigBrother
 {
-    private Command helpCommand;
     private List<Command> commands;
 
     private void InitAllCommands()
     {
-        helpCommand = new Command("help", "([a-zA-Z]*)", "` -> You do need some", Help, AccessLevel.Limited);
-        commands.Add(helpCommand);
+        commands.Add(new Command("help", "([a-zA-Z]*)", "` -> You do need some", Help, AccessLevel.Limited));
         InitQuit();
         InitDice();
         InitQuote();

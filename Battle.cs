@@ -75,14 +75,14 @@ internal class Battle
 
     private List<Event> events;
 
-    public bool IsActive;
+    public bool IsCreated;
     public bool IsPlaying;
     private List<Player> players;
     private List<Player> alivePlayers;
 
     public Battle(string filename)
     {
-        IsActive = false;
+        IsCreated = false;
         IsPlaying = false;
         players = new List<Player>();
         alivePlayers = new List<Player>();
@@ -97,33 +97,36 @@ internal class Battle
         {
             foreach (string line in streamReader.ReadToEnd().Split("\n"))
             {
-                string[] args = line.Split("");
+                string[] args = line.Split(",");
                 if (args.Length == 3)
                     events.Add(new Event(args[0], args[1], args[2]));
             }
         }
     }
 
-    public IEnumerable<string> StartGame()
+    public IEnumerable<string> CreateGame(IUser user)
     {
-        // TODO
-        if (IsActive)
+        if (IsCreated)
         {
-            yield return "";   
+            yield return "There already is an active battle, please wait for it to finish";
         }
         else
         {
-            IsActive = true;
+            IsCreated = true;
+            IsPlaying = false;
             players.Clear();
             alivePlayers.Clear();
-            yield return "";
+            yield return "New battle created, everyone can join in!";
+            // The player creating it is automaticly joined
+            foreach (string thing in JoinGame(user))
+                yield return thing;
         }
     }
 
     public IEnumerable<string> JoinGame(IUser player)
     {
         // TODO
-        if (!IsActive)
+        if (!IsCreated)
         {
             yield return "";
         }
@@ -134,14 +137,27 @@ internal class Battle
         else
         {
             Player newPlayer = new Player(player.Id, player.Username);
-            players.Add(newPlayer);
-            alivePlayers.Add(newPlayer);
-            yield return "";
+            if (players.Any(alreadyPlaying => alreadyPlaying.Id == newPlayer.Id))
+            {
+                yield return $"{{{player.Id}}}, you already joined this battle";
+            }
+            else
+            {
+                players.Add(newPlayer);
+                alivePlayers.Add(newPlayer);
+                yield return $"{{{player.Id}}} joins the battle!";
+            }
         }
     }
 
-    public IEnumerable<string> PlayGame()
+    public IEnumerable<string> StartGame()
     {
+        if (!IsCreated || IsPlaying)
+        {
+            yield return "The battle is either already started or not yet created";
+            yield break;
+        }
+
         IsPlaying = true;
         while (IsPlaying && alivePlayers.Count > 1)
         {
@@ -158,26 +174,27 @@ internal class Battle
             }
         }
 
-        yield return $"{alivePlayers[0].Name} is the winner !";
+        yield return $"{{{alivePlayers[0].Id}}} is the winner !";
+        StopGame();
     }
 
     public void StopGame()
     {
-        IsActive = false;
+        IsCreated = false;
         IsPlaying = false;
     }
 }
 
 internal partial class BigBrother
 {
-    private const string EVENTFOLDER = "C:\\Users\\remi\\OneDrive\\Documents\\Travail\\Prog\\C#\\BigBrother\\BigBrother\\Data";
+    private const string EVENTFOLDER = "C:\\Users\\remi\\OneDrive\\Documents\\Travail\\Prog\\C#\\BigBrother\\BigBrother\\Data\\Battle";
     private Dictionary<ulong, Battle> battles = new Dictionary<ulong, Battle>() { };
 
     private void InitBattle()
     {
-        commands.Add(new Command("battle", "` -> Start a new battle for players to join (WIP)", StartBattle));
+        commands.Add(new Command("battle", "` -> Start a new battle for players to join (WIP)", CreateBattle));
         commands.Add(new Command("joinBattle", "` -> Join the current battle (WIP)", JoinBattle));
-        commands.Add(new Command("playBattle", "` -> Close the current battle to new players and starts the game (WIP)", PlayBattle));
+        commands.Add(new Command("startBattle", "` -> Close the current battle to new players and starts the game (WIP)", StartBattle));
         commands.Add(new Command("stopBattle", "` -> Stop the current battle (WIP)", StopBattle, AccessLevel.Moderator));
     }
 
@@ -192,7 +209,7 @@ internal partial class BigBrother
         return battles[guild.Id];
     }
 
-    private async Task StartBattle(IMessage message, GroupCollection args)
+    private async Task CreateBattle(IMessage message, GroupCollection args)
     {
         Battle? battle = GetBattle(message);
         if (battle == null)
@@ -201,7 +218,7 @@ internal partial class BigBrother
             return;
         }
 
-        foreach (string thing in battle.StartGame())
+        foreach (string thing in battle.CreateGame(message.Author))
             await SendMessage(message.Channel, thing);
     }
 
@@ -218,7 +235,7 @@ internal partial class BigBrother
             await SendMessage(message.Channel, thing);
     }
 
-    private async Task PlayBattle(IMessage message, GroupCollection args)
+    private async Task StartBattle(IMessage message, GroupCollection args)
     {
         Battle? battle = GetBattle(message);
         if (battle == null)
@@ -227,7 +244,7 @@ internal partial class BigBrother
             return;
         }
 
-        foreach (string thing in battle.PlayGame())
+        foreach (string thing in battle.StartGame())
             await SendMessage(message.Channel, thing);
     }
 
