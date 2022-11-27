@@ -1,6 +1,6 @@
 ﻿internal class GuildSettings
 {
-    public Dictionary<ulong, AccessLevel>? AccessLevels;
+    public Dictionary<ulong, AccessLevel> AccessLevels;
 
     public bool BotChannelOnly;
     public ulong? BotChannel;
@@ -10,6 +10,8 @@
 
     public GuildSettings(ulong? quoteChannel = null, ulong? botChannel = null, Dictionary<ulong, AccessLevel>? accessLevels = null, string? eventFile = null)
     {
+        if (accessLevels == null)
+            accessLevels = new Dictionary<ulong, AccessLevel>();
         AccessLevels = accessLevels;
 
         QuoteChannel = quoteChannel;

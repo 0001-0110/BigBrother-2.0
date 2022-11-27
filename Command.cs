@@ -68,11 +68,13 @@ internal class Command
 
 internal partial class BigBrother
 {
+    private Command helpCommand;
     private List<Command> commands;
 
     private void InitAllCommands()
     {
-        commands.Add(new Command("help", "([a-zA-Z]*)", "` -> You do need some", Help, AccessLevel.Limited));
+        helpCommand = new Command("help", "([a-zA-Z]*)", "` -> You do need some", Help, AccessLevel.Limited);
+        commands.Add(helpCommand);
         InitQuit();
         InitDice();
         InitQuote();
@@ -91,9 +93,18 @@ internal partial class BigBrother
     private Command? GetCommandByName(string message)
     {
         foreach (Command command in commands)
-            if (command.IsMatch(message))
+            if (command.Name == message)
                 return command;
         return null;
+    }
+
+    private AccessLevel GetAccessLevel(IChannel channel, IUser user)
+    {
+        SocketGuild? guild = GetGuild(channel);
+        if (guild == null)
+            throw new Exception("Couldn't find the guild");
+        GuildSettings activeGuildSettings = guildSettings[guild.Id];
+        return activeGuildSettings.AccessLevels[user.Id];
     }
 
     private async Task Help(IMessage message, string args = "")
@@ -101,11 +112,12 @@ internal partial class BigBrother
         string help = "Help:";
         if (args != "")
         {
-            // TODO
             Command? command = GetCommandByName(args);
             if (command == null)
-                //await Help();
-                throw new NotImplementedException();
+            {
+                await Help(message);
+                return;
+            }
             else
                 help += $"\n> {command.Help}";
         }
@@ -125,14 +137,15 @@ internal partial class BigBrother
             await Help(message);
     }
 
-    private async Task InvalidUse(IMessage message)
+    private async Task InvalidUse(IMessage message, string commandName)
     {
-        throw new NotImplementedException();
+        await SendMessage(message.Channel, "Invalid use of this command, this might help you:");
+        await Help(message, commandName);
     }
 
     private async Task UnauthorizedUse(IMessage message)
     {
-        throw new NotImplementedException();
+        await SendMessage(message.Channel, "You do not have the permission to use this command");
     }
 
     private async Task CommandReceived(IMessage message)
@@ -140,15 +153,12 @@ internal partial class BigBrother
         Command? command = GetCommand(message.Content);
         if (command == null)
         {
-            // Unknown command
-            // TODO Display help
+            await SendMessage(message.Channel, "Unknown command");
             await Help(message);
             return;
         }
 
-        // TODO handle that safely
-        SocketGuild? guild = GetGuild(message.Channel);
-        AccessLevel userAccessLevel = guildSettings[guild.Id].AccessLevels[message.Author.Id];
+        AccessLevel userAccessLevel = GetAccessLevel(message.Channel, message.Author);
         if (userAccessLevel < command.AccessLevel)
         {
             await UnauthorizedUse(message);
@@ -157,7 +167,7 @@ internal partial class BigBrother
 
         if (!await command.TryMatch(message))
         {
-            await InvalidUse(message);
+            await InvalidUse(message, command.Name);
         }
     }
 }

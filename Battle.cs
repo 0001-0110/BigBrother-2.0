@@ -175,10 +175,10 @@ internal partial class BigBrother
 
     private void InitBattle()
     {
-        commands.Add(new Command("battle", "` -> start a new battle for players to join", StartBattle));
-        commands.Add(new Command("joinBattle", "` -> Join the current battle", JoinBattle));
-        commands.Add(new Command("playBattle", "` -> Close the current battle to new players and starts the game", PlayBattle));
-        commands.Add(new Command("stopBattle", "` -> Stop the current battle", StopBattle, AccessLevel.Moderator));
+        commands.Add(new Command("battle", "` -> Start a new battle for players to join (WIP)", StartBattle));
+        commands.Add(new Command("joinBattle", "` -> Join the current battle (WIP)", JoinBattle));
+        commands.Add(new Command("playBattle", "` -> Close the current battle to new players and starts the game (WIP)", PlayBattle));
+        commands.Add(new Command("stopBattle", "` -> Stop the current battle (WIP)", StopBattle, AccessLevel.Moderator));
     }
 
     private Battle? GetBattle(IMessage message)
