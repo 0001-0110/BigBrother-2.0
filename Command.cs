@@ -71,7 +71,7 @@ internal partial class BigBrother
 
     private void InitAllCommands()
     {
-        commands.Add(new Command("help", "([a-zA-Z]*)", "` -> You do need some", Help, AccessLevel.Limited));
+        commands.Add(new Command("help", "([a-zA-Z]*)", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Limited));
         InitQuit();
         InitDice();
         InitQuote();
@@ -129,7 +129,7 @@ internal partial class BigBrother
             GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
             AccessLevel userAccessLevel = GetAccessLevel(activeGuildSettings, message.Author);
             foreach (Command command in commands)
-                if (userAccessLevel < command.AccessLevel)
+                if (userAccessLevel >= command.AccessLevel)
                     help += $"\n> {command.Help}";
         }
         await SendMessage(message.Channel, help);

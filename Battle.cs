@@ -106,7 +106,7 @@ internal class Battle
 
     public IEnumerable<string> CreateGame(bool clear=true)
     {
-        if (IsCreated)
+        if (IsPlaying)
         {
             yield return "There already is an active battle, please wait for it to finish";
         }
@@ -149,17 +149,17 @@ internal class Battle
 
     public IEnumerable<string> StartGame()
     {
-        alivePlayers.Clear();
-        foreach (Player player in players)
-            alivePlayers.Add(player);
-
         if (!IsCreated || IsPlaying)
         {
             yield return "The battle is either already started or not yet created";
             yield break;
         }
 
+        alivePlayers.Clear();
+        foreach (Player player in players)
+            alivePlayers.Add(player);
         IsPlaying = true;
+
         while (IsPlaying && alivePlayers.Count > 1)
         {
             Player activePlayer = alivePlayers[random.Next(0, alivePlayers.Count)];
@@ -176,14 +176,15 @@ internal class Battle
         }
 
         yield return $"{{{alivePlayers[0].Id}}} is the winner !";
-        StopGame();
+        foreach (string thing in StopGame())
+            yield return thing;
     }
 
     public IEnumerable<string> StopGame()
     {
         IsCreated = false;
         IsPlaying = false;
-        yield return "Time for peace !";
+        yield return "The battle is over! You can launch a new one with `!battle`";
     }
 }
 
