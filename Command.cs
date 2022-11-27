@@ -105,7 +105,9 @@ internal partial class BigBrother
 
     private AccessLevel GetAccessLevel(GuildSettings guildSettings, IUser user)
     {
-        return guildSettings.AccessLevels[user.Id];
+        if (guildSettings.AccessLevels.ContainsKey(user.Id))
+            return guildSettings.AccessLevels[user.Id];
+        return AccessLevel.Standard;
     }
 
     private async Task Help(IMessage message, string args = "")
@@ -124,8 +126,11 @@ internal partial class BigBrother
         }
         else
         {
+            GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
+            AccessLevel userAccessLevel = GetAccessLevel(activeGuildSettings, message.Author);
             foreach (Command command in commands)
-                help += $"\n> {command.Help}";
+                if (userAccessLevel < command.AccessLevel)
+                    help += $"\n> {command.Help}";
         }
         await SendMessage(message.Channel, help);
     }

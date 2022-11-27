@@ -104,7 +104,7 @@ internal class Battle
         }
     }
 
-    public IEnumerable<string> CreateGame(IUser user)
+    public IEnumerable<string> CreateGame(bool clear=true)
     {
         if (IsCreated)
         {
@@ -115,43 +115,44 @@ internal class Battle
             IsCreated = true;
             IsPlaying = false;
             players.Clear();
-            alivePlayers.Clear();
             yield return "New battle created, everyone can join in!";
-            // The player creating it is automaticly joined
-            foreach (string thing in JoinGame(user))
-                yield return thing;
         }
     }
 
     public IEnumerable<string> JoinGame(IUser player)
     {
-        // TODO
+        if (IsPlaying)
+        {
+            yield return "There already is a game in progress, wait for it to finish";
+            yield break;
+        }
+
         if (!IsCreated)
         {
-            yield return "";
+            // Create a new battle
+            foreach (string thing in CreateGame())
+                yield return thing;
         }
-        else if (IsPlaying)
+
+        Player newPlayer = new Player(player.Id, player.Username);
+        if (players.Any(alreadyPlaying => alreadyPlaying.Id == newPlayer.Id))
         {
-            yield return "";
+            yield return $"{{{player.Id}}}, you already joined this battle";
         }
         else
         {
-            Player newPlayer = new Player(player.Id, player.Username);
-            if (players.Any(alreadyPlaying => alreadyPlaying.Id == newPlayer.Id))
-            {
-                yield return $"{{{player.Id}}}, you already joined this battle";
-            }
-            else
-            {
-                players.Add(newPlayer);
-                alivePlayers.Add(newPlayer);
-                yield return $"{{{player.Id}}} joins the battle!";
-            }
+            players.Add(newPlayer);
+            alivePlayers.Add(newPlayer);
+            yield return $"{{{player.Id}}} joins the battle!";
         }
     }
 
     public IEnumerable<string> StartGame()
     {
+        alivePlayers.Clear();
+        foreach (Player player in players)
+            alivePlayers.Add(player);
+
         if (!IsCreated || IsPlaying)
         {
             yield return "The battle is either already started or not yet created";
@@ -178,10 +179,11 @@ internal class Battle
         StopGame();
     }
 
-    public void StopGame()
+    public IEnumerable<string> StopGame()
     {
         IsCreated = false;
         IsPlaying = false;
+        yield return "Time for peace !";
     }
 }
 
@@ -192,10 +194,9 @@ internal partial class BigBrother
 
     private void InitBattle()
     {
-        commands.Add(new Command("battle", "` -> Start a new battle for players to join (WIP)", CreateBattle));
-        commands.Add(new Command("joinBattle", "` -> Join the current battle (WIP)", JoinBattle));
-        commands.Add(new Command("startBattle", "` -> Close the current battle to new players and starts the game (WIP)", StartBattle));
-        commands.Add(new Command("stopBattle", "` -> Stop the current battle (WIP)", StopBattle, AccessLevel.Moderator));
+        commands.Add(new Command("battle", "` -> Join the next battle", JoinBattle));
+        commands.Add(new Command("startBattle", "` -> Close the current battle to new players and starts the game", StartBattle));
+        commands.Add(new Command("stopBattle", "` -> Stop the current battle", StopBattle, AccessLevel.Moderator));
     }
 
     private Battle? GetBattle(IMessage message)
@@ -209,25 +210,12 @@ internal partial class BigBrother
         return battles[guild.Id];
     }
 
-    private async Task CreateBattle(IMessage message, GroupCollection args)
-    {
-        Battle? battle = GetBattle(message);
-        if (battle == null)
-        {
-            await SendMessage(message.Channel, "Sadly, battles are not available on this server");
-            return;
-        }
-
-        foreach (string thing in battle.CreateGame(message.Author))
-            await SendMessage(message.Channel, thing);
-    }
-
     private async Task JoinBattle(IMessage message, GroupCollection args)
     {
         Battle? battle = GetBattle(message);
         if (battle == null)
         {
-            await SendMessage(message.Channel, "Couldn't load the battle");
+            await SendMessage(message.Channel, "Sadly, battles are not available on this server");
             return;
         }
 
@@ -257,6 +245,7 @@ internal partial class BigBrother
             return;
         }
 
-        battle.StopGame();
+        foreach (string thing in battle.StopGame())
+            await SendMessage(message.Channel, thing);
     }
 }
