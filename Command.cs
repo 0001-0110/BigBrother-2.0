@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 enum AccessLevel
 {
@@ -22,12 +23,12 @@ internal class Command
     private Func<IMessage, GroupCollection, Task> execute;
     public AccessLevel AccessLevel;
 
-    public Command(string name, string help, 
-        Func<IMessage, GroupCollection, Task> function, AccessLevel accessLevel = AccessLevel.Standard)
+    public Command(string name, string help, Func<IMessage, GroupCollection, Task> function, 
+        AccessLevel accessLevel = AccessLevel.Standard)
         : this(name, "", help, function, accessLevel) { }
 
-    public Command(string name, string argsRegex, string help,
-        Func<IMessage, GroupCollection, Task> function, AccessLevel accessLevel = AccessLevel.Standard)
+    public Command(string name, string argsRegex, string help, Func<IMessage, GroupCollection, Task> function, 
+        AccessLevel accessLevel = AccessLevel.Standard)
     {
         Name = name;
         string prefixedCommand = $"^{Prefix}{name}";
@@ -94,13 +95,17 @@ internal partial class BigBrother
         return null;
     }
 
-    private AccessLevel GetAccessLevel(IChannel channel, IUser user)
+    private GuildSettings GetGuildSettings(IChannel channel)
     {
         SocketGuild? guild = GetGuild(channel);
         if (guild == null)
             throw new Exception("Couldn't find the guild");
-        GuildSettings activeGuildSettings = guildSettings[guild.Id];
-        return activeGuildSettings.AccessLevels[user.Id];
+        return guildSettings[guild.Id];
+    }
+
+    private AccessLevel GetAccessLevel(GuildSettings guildSettings, IUser user)
+    {
+        return guildSettings.AccessLevels[user.Id];
     }
 
     private async Task Help(IMessage message, string args = "")
@@ -154,7 +159,8 @@ internal partial class BigBrother
             return;
         }
 
-        AccessLevel userAccessLevel = GetAccessLevel(message.Channel, message.Author);
+        GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
+        AccessLevel userAccessLevel = GetAccessLevel(activeGuildSettings, message.Author);
         if (userAccessLevel < command.AccessLevel)
         {
             await UnauthorizedUse(message);

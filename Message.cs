@@ -39,11 +39,19 @@ internal partial class BigBrother
         await message.DeleteAsync();
     }
 
+    private bool IsBannedWord(SocketMessage message)
+    {
+        GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
+        foreach (Regex bannedWord in activeGuildSettings.BannedWords)
+            if (bannedWord.IsMatch(message.Content))
+                return true;
+        return false;
+    }
+
     private async Task MessageReceived(SocketMessage messageReceived)
     {
         // To avoid confusion when multiple instances of this function are runnning at the same time
         SocketMessage message = messageReceived;
-        Console.WriteLine($"message: {message.Content}");
 
         // Ignore its own messages
         if (message.Author.Id == client.CurrentUser.Id)
@@ -52,6 +60,12 @@ internal partial class BigBrother
         if (message.Content.StartsWith(Command.Prefix))
         {
             await CommandReceived(message);
+            return;
+        }
+
+        if (IsBannedWord(message))
+        {
+            await DeleteMessage(message);
             return;
         }
     }
