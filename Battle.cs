@@ -184,13 +184,13 @@ internal class Battle
     {
         IsCreated = false;
         IsPlaying = false;
-        yield return "The battle is over! You can launch a new one with `!battle`";
+        yield return "The battle is over!";
     }
 }
 
 internal partial class BigBrother
 {
-    private const string EVENTFOLDER = "C:\\Users\\remi\\OneDrive\\Documents\\Travail\\Prog\\C#\\BigBrother\\BigBrother\\Data\\Battle";
+    private const string EVENTFOLDER = "Battle";
     private Dictionary<ulong, Battle> battles = new Dictionary<ulong, Battle>() { };
 
     private void InitBattle()
@@ -207,7 +207,7 @@ internal partial class BigBrother
             throw new Exception("Guild was not found");
         if (!battles.ContainsKey(guild.Id))
             if (guildSettings[guild.Id].EventsFile != null)
-                battles[guild.Id] = new Battle($"{EVENTFOLDER}\\{guildSettings[guild.Id].EventsFile}");
+                battles[guild.Id] = new Battle(GetPath(EVENTFOLDER, guildSettings[guild.Id].EventsFile!));
         return battles[guild.Id];
     }
 

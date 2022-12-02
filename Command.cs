@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using System.Text.RegularExpressions;
-using System.Threading.Channels;
 
 enum AccessLevel
 {
@@ -24,11 +23,11 @@ internal class Command
     public AccessLevel AccessLevel;
 
     public Command(string name, string help, Func<IMessage, GroupCollection, Task> function, 
-        AccessLevel accessLevel = AccessLevel.Standard)
+        AccessLevel accessLevel=AccessLevel.Standard)
         : this(name, "", help, function, accessLevel) { }
 
     public Command(string name, string argsRegex, string help, Func<IMessage, GroupCollection, Task> function, 
-        AccessLevel accessLevel = AccessLevel.Standard)
+        AccessLevel accessLevel=AccessLevel.Standard)
     {
         Name = name;
         string prefixedCommand = $"^{Prefix}{name}";
@@ -74,7 +73,9 @@ internal partial class BigBrother
         commands.Add(new Command("help", "([a-zA-Z]*)", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Limited));
         InitQuit();
         InitDice();
+        InitRemindMe();
         InitQuote();
+        InitInsult();
         InitBattle();
         InitHangman();
     }

@@ -3,8 +3,9 @@ using Discord.WebSocket;
 
 internal partial class BigBrother
 {
-    private string tokenFile;
-
+    private const string TOKENFILE = "token.txt";
+    private string localPath;
+    
     private bool IsRunning;
     private DiscordSocketClient client;
     private Settings settings;
@@ -14,9 +15,9 @@ internal partial class BigBrother
 
     private Random random = new Random();
 
-    public BigBrother(string tokenFile)
+    public BigBrother(string localPath)
     {
-        this.tokenFile = tokenFile;
+        this.localPath = localPath;
 
         client = new DiscordSocketClient(
             new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All });
@@ -51,11 +52,12 @@ internal partial class BigBrother
 
     private async Task Connect()
     {
-        string token;
-        using (StreamReader file = new StreamReader(tokenFile))
-            token = file.ReadToEnd();
-        await client.LoginAsync(TokenType.Bot, token);
-        await client.StartAsync();
+        using (StreamReader file = new StreamReader(GetPath(TOKENFILE)))
+        {
+            string token = file.ReadToEnd();
+            await client.LoginAsync(TokenType.Bot, token);
+            await client.StartAsync();
+        }
     }
 
     private async Task ClientReady()
