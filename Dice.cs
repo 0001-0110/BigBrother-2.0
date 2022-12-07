@@ -5,7 +5,7 @@ internal partial class BigBrother
 {
     private void InitDice()
     {
-        commands.Add(new Command("dice", "([0-9]*) ?([0-9]*)", " <max=6> <throws=1>` -> Roll `throws` time a dice with `max` side", Dice));
+        commands.Add(new Command("dice", "(?: ([0-9]*))?(?: ([0-9]*))?", " <max=6> <throws=1>` -> Roll `throws` time a dice with `max` side", Dice));
     }
 
     private async Task DiceRoll(IMessageChannel channel, int max)

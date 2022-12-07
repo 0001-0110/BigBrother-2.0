@@ -32,11 +32,7 @@ internal class Command
         Name = name;
         string prefixedCommand = $"^{Prefix}{name}";
         commandRegex = new Regex(prefixedCommand);
-        if (argsRegex.Length == 0)
-            commandRegexArgs = new Regex($"{prefixedCommand}$");
-        else
-            // " ?" between the command and the args to account for the space only if there is given args
-            commandRegexArgs = new Regex($"{prefixedCommand} ?{argsRegex}$");
+        commandRegexArgs = new Regex($"{prefixedCommand}{argsRegex}$");
         Help = $"> `{Prefix}{name}{help}";
         execute = function;
         AccessLevel = accessLevel;
@@ -70,8 +66,10 @@ internal partial class BigBrother
 
     private void InitAllCommands()
     {
-        commands.Add(new Command("help", "([a-zA-Z]*)", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Limited));
+        commands.Add(new Command("help", "(?: ([a-zA-Z]*))?", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Limited));
+
         InitQuit();
+        InitSay();
         InitDice();
         InitRemindMe();
         InitQuote();

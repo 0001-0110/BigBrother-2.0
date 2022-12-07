@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Quotes>
+    <RealLife>
+        <Siegfried>
+            <Quote language="French" character="Remi">C'est toi la contrainte</Quote>
+            <Quote language="French" character="Remi">Une bonne vélocité ça donne une bonne pénétration</Quote>
+            <Quote language="French" character="Antonin">C'est un camp de déconcentration en fait</Quote>
+            <Quote language="French" character="Antonin">Merci les gras</Quote>
+            <Quote language="French" character="Soazig">Pas d'utérus pas d'opinion</Quote>
+            <Quote language="French" character="Soazig">Il commence a pleuvoir sec</Quote>
+            <Quote language="French" character="Anatole Lucet">Tu n'introduis pas suffisamment ton introduction</Quote>
+            <Quote language="French" character="Anatole Lucet">Le problème c'est au moment de poser le problème</Quote>
+            <Quote language="French" character="Theo Cudeville">Thèse, Antithèse, Prothèse</Quote>
+        </Siegfried>
+        <EPITA>
+            <Quote language="English" character="Sarah">The most middle average thing</Quote>
+            <Quote language="French" character="Antoine">C'est pas un salut nazi, c'est un vecteur vitesse</Quote>
+            <Quote language="French" character="Louis">C'est quoi un diplodocus ? C'est un pokémon ?</Quote>
+        </EPITA>
+    </RealLife>
+    <VideoGames>
+        <TeamFortress2>
+            <Quote language="English" character="Scout">Hehey, look, you shapeshifted into a dead guy!</Quote>
+            <Quote language="English" character="Scout">Yeah, next time, try two eyes!</Quote>
+            <Quote language="English" character="Soldier">I have done nothing but teleport bread for three days</Quote>
+            <Quote language="English" character="Soldier">If God wanted you to live, he would not have created me!</Quote>
+            <Quote language="English" character="Soldier">You were good son, real good; maybe even the best</Quote>
+            <Quote language="English" character="Demoman">I'm a black scottish cyclops</Quote>
+            <Quote language="English" character="Demoman">If i were a bad demoman, I wouldn't be sittin' here discussing it with ya now would I?</Quote>
+            <Quote language="English" character="Demoman">They are going to have to glue you back together...IN HELL!!!</Quote>
+            <Quote language="English" character="Demoman">Couldn't ya see the bloody bombs?</Quote>
+            <Quote language="English" character="Heavy Weapons Guy">Some people think they can outsmart me. Maybe, maybe. I've yet to meet one that can outsmart bullets</Quote>
+            <Quote language="English" character="Engineer">Nope</Quote>
+            <Quote language="English" character="Engineer">Use a gun. And if that don't work, use more gun.</Quote>
+            <Quote language="English" character="Engineer">I told ya don't touch that darn thing</Quote>
+            <Quote language="English" character="Medic">Oops, That was not medicine</Quote>
+            <Quote language="English" character="Medic">Anyway, that's how I lost my medical license</Quote>
+            <Quote language="English" character="Medic">Would you like a second opinion? you are also UGLY!</Quote>
+            <Quote language="English" character="Medic">My professional opinion ? Ha ha, you're dead!</Quote>
+            <Quote language="English" character="Sniper">As Long as there are two people left on the planet, someone is gonna want someone dead</Quote>
+            <Quote language="Englisg" character="Sniper">Professional have standards</Quote>
+            <Quote language="Englisg" character="Sniper">Well, the difference bein' one is a job and the other's a mental sickness!</Quote>
+            <Quote language="English" character="Sniper">How many times have you died? I'm actually getting impressed</Quote>
+        </TeamFortress2>
+        <SteelDivision></SteelDivision>
+        <CompanyOfHeroes2>
+            <Quote language="English">WE SHOULD ALL HAVE STURMGEWEHRS!! Er, YOU GET A STURMGEWEHR, YOU GET A STURMGEWEHR, EVERYONE GETS STURMGEWEHRS!!!</Quote>
+        </CompanyOfHeroes2>
+        <Rainbow6>
+            <Quote language="English" character="Vigil">I'm in everyone blind spot</Quote>
+            <Quote language="English" character="Thermite">Time to make a new door</Quote>
+        </Rainbow6>
+        <Portal>
+            <Quote language="English" character="GLaDOS">For the good of all of us, except the one who are dead</Quote>
+            <Quote language="English" character="GLaDOS">We do what we must because we can</Quote>
+        </Portal>
+    </VideoGames>
+    <Movies>
+        <MaisOuEstPasseLa7eCompagnie>
+            <Quote language="French">J'ai glissé chef</Quote>
+            <Quote language="French">Le fil rouge, sur le bouton rouge; le fil vert, sur le bouton vert</Quote>
+            <Quote language="German">Bleiben sie groupir</Quote>
+            <Quote language="French">Tant pis, on tamponne</Quote>
+        </MaisOuEstPasseLa7eCompagnie>
+    </Movies>
+    <Series>
+        <StarVersusTheForcesOfEvil>
+            <Quote language="English" character="Star Butterfly">Raspberry PANZERFAUST!</Quote>
+        </StarVersusTheForcesOfEvil>
+        <HelluvaBoss>
+            <Quote language="French" character="Moxxie">Mon ange de la mort, ma dèese de l'amour</Quote>
+        </HelluvaBoss>
+        <TheOwlHouse>
+            <Quote language="English" character="Luz">I'm an otter... with a dark side</Quote>
+            <Quote language="English" character="Eda">Quitting! It's like trying, but easier</Quote>
+            <Quote language="English" character="Hooty">A good friend would respect her wishes, but a better friend would help no matter what!</Quote>
+            <Quote language="English" character="Willow">Sorry I can't stay, I have to go disappoint my teacher</Quote>
+        </TheOwlHouse>
+        <Amphibia></Amphibia>
+        <InsideJob></InsideJob>
+        <HarleyQuinn></HarleyQuinn>
+        <TeenTitans></TeenTitans>
+        <GravityFalls></GravityFalls>
+        <Arcane>
+            <Quote language="English" character="Jinx">Sheesh, I'm not THAT crazy!</Quote>
+            <Quote language="English" character="Heimerdinger" episode="6">It's a sad truth that those who shine brightest often burn fastest</Quote>
+        </Arcane>
+        <GirlUndPanzer></GirlUndPanzer>
+        <SpyXFamily></SpyXFamily>
+        <TheDragonPrince>
+            <Quote language="English" character="Rayla">My heart for Xadia.</Quote>
+            <Quote language="English" character="Rayla">Greetings, Fellow humans! Human fellas!</Quote>
+            <Quote language="English" character="Rayla">I just pressed all the stones with the jelly handprints</Quote>
+            <Quote language="English" character="Soren">Now I can't do anything terrible, because now I can't do anything</Quote>
+            <Quote language="English" character="Lujanne">If wisdom is what you seek, I should do my best to fake it</Quote>
+            <Quote></Quote>
+        </TheDragonPrince>
+        <AvatarTheLastAirbender>
+            <Quote language="English" character="Sokka">Surface-to-air rock!</Quote>
+            <Quote language="English" character="Toph">I've seen enough of Ba Sing Se, and I can't even see!</Quote>
+            <Quote language="English">And then she cartwheel-ed away</Quote>
+            <Quote language="English" character="Azula">I'm about to celebrate becoming an only child</Quote>
+        </AvatarTheLastAirbender>
+        <Wednesday>
+            <Quote language="English" character="Wednesday">I see the world as a place that must be endured, and my personal philosophy is kill or be killed.</Quote>
+            <Quote language="English" character="Wednesday">When I look at you, the following emojis come to mind. Rope. Shovel. Hole. </Quote>
+            <Quote language="English" character="Wednesday">I act as if I don't care if people dislike me. Deep down, I secretly enjoy it.</Quote>
+        </Wednesday>
+        <LittleWitchAcademia></LittleWitchAcademia>
+    </Series>
+    <Youtube>
+        <TheBigBangTheory>
+            <quote language="English" character="Sheldon">I'd have to lose 60 IQ to be classified as smart</quote>
+            <quote language="English" character="Sheldon">The only way she could make a contribution to science would be if they resumed sending chimps into space</quote>
+        </TheBigBangTheory>
+        <JoueurDuGrenier>
+            <Quote language="French">Non mais je suis un assassin, pas un monstre</Quote>
+        </JoueurDuGrenier>
+    </Youtube>
+</Quotes>
