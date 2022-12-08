@@ -21,9 +21,9 @@ internal partial class BigBrother
     private void InitSettings()
     {
         settings = new Settings(
-            1044351592515768431,
-            ActivityType.Watching,
-            "you"
+            logChannelId: 1044351592515768431,
+            statusType: ActivityType.Watching,
+            status: "you"
             );
     }
 }

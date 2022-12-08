@@ -70,8 +70,8 @@ internal partial class BigBrother
 
         InitQuit();
         InitSay();
-        InitDice();
         InitRemindMe();
+        InitDice();
         InitQuote();
         InitInsult();
         InitBattle();
@@ -117,6 +117,7 @@ internal partial class BigBrother
             Command? command = GetCommandByName(args);
             if (command == null)
             {
+                // TODO add something in case of unknown command
                 await Help(message);
                 return;
             }

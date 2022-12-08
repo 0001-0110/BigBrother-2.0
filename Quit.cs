@@ -10,9 +10,10 @@ internal partial class BigBrother
 
     private async Task Quit(IMessage message, GroupCollection args)
     {
-        await SendMessage(message.Channel, "Quitting! It's like trying, but easier");
+        await SendMessage(message.Channel, "Let's call it a day!");
         await DebugLog("Quit command received");
         await client.SetGameAsync("dead", type: ActivityType.Playing);
         IsRunning = false;
+        IsReady = false;
     }
 }

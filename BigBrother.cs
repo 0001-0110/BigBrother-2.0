@@ -7,6 +7,7 @@ internal partial class BigBrother
     private string localPath;
     
     private bool IsRunning;
+    private bool IsReady;
     private DiscordSocketClient client;
     private Settings settings;
     Dictionary<ulong, GuildSettings> guildSettings;
@@ -17,12 +18,16 @@ internal partial class BigBrother
 
     public BigBrother(string localPath)
     {
+        IsRunning = false;
+        IsReady = false;
+
         this.localPath = localPath;
 
         client = new DiscordSocketClient(
             new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All });
         client.Log += Log;
         client.Ready += ClientReady;
+        client.Disconnected += Disconnected;
         client.MessageReceived += MessageReceived;
 
         commands = new List<Command>();
@@ -62,9 +67,16 @@ internal partial class BigBrother
 
     private async Task ClientReady()
     {
+        IsReady = true;
+
         logChannel = await client.GetChannelAsync(settings.LogChannelId) as IMessageChannel;
 
         if (settings.StatusType != null)
             await client.SetGameAsync(settings.Status, type: (ActivityType)settings.StatusType);
+    }
+
+    private async Task Disconnected(Exception exception)
+    {
+        IsReady = false;
     }
 }

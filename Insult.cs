@@ -9,7 +9,6 @@ internal partial class BigBrother
 
     private void InitInsult()
     {
-        // TODO find a regex that accepts mentions
         commands.Add(new Command("insult", "(?: <@([0-9]+)>)?", "` -> Do I really need to explain this one to you ? ", Insult));
     }
 
@@ -21,7 +20,6 @@ internal partial class BigBrother
 
     private async Task Insult(IMessage message, GroupCollection args)
     {
-        // TODO use the mention to target the insult
         if (insults == null)
             LoadInsults();
 
@@ -36,6 +34,7 @@ internal partial class BigBrother
                 return;
             }
 
+            // TODO is redundant with SendMessage
             string mention = MentionUtils.MentionUser(userId);
             if (mention == "")
             {
