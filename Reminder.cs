@@ -70,7 +70,7 @@ internal class Reminder
 
 internal partial class BigBrother
 {
-    private const string REMINDERFOLDER = "Reminder";
+    private const string REMINDERFOLDER = "Reminders";
     //private const string REMINDERFILE = "Reminders.csv";
 
     private List<Reminder> reminders;
@@ -126,7 +126,7 @@ internal partial class BigBrother
         Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[3].Value);
         reminders.Add(newReminder);
         newReminder.Save(GetPath(REMINDERFOLDER));
-        await SendMessage(message.Channel, $"{{{message.Author.Id}}}: Reminder added");
+        await SendMessage(message.Channel, $"{{{message.Author.Id}}}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
     }
 
     private async void Remind()
