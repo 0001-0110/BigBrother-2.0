@@ -12,6 +12,7 @@ internal partial class BigBrother
     {
         await SendMessage(message.Channel, "Quitting! It's like trying, but easier");
         await DebugLog("Quit command received");
+        await client.SetGameAsync("dead", type: ActivityType.Playing);
         IsRunning = false;
     }
 }

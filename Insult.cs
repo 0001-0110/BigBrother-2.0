@@ -10,7 +10,7 @@ internal partial class BigBrother
     private void InitInsult()
     {
         // TODO find a regex that accepts mentions
-        commands.Add(new Command("insult", "", "` -> Do I really need to explain this one to you ? ", Insult));
+        commands.Add(new Command("insult", "(?: <@([0-9]+)>)?", "` -> Do I really need to explain this one to you ? ", Insult));
     }
 
     private void LoadInsults()
@@ -24,6 +24,30 @@ internal partial class BigBrother
         // TODO use the mention to target the insult
         if (insults == null)
             LoadInsults();
-        await SendMessage(message.Channel, insults![random.Next(0, insults.Length)]);
+
+        string insult = insults![random.Next(0, insults.Length)];
+
+        if (args[1].Value != "")
+        {
+            ulong userId;
+            if (!ulong.TryParse(args[1].Value, out userId))
+            {
+                await SendMessage(message.Channel, "Incorrect user ID");
+                return;
+            }
+
+            string mention = MentionUtils.MentionUser(userId);
+            if (mention == "")
+            {
+                await SendMessage(message.Channel, "Incorrect user ID");
+                return;
+            }
+
+            await SendMessage(message.Channel, $"{mention} {insult}");
+        }
+        else
+        {
+            await SendMessage(message.Channel, insult);
+        }
     }
 }
