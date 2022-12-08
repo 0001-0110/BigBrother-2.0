@@ -78,7 +78,7 @@ internal partial class BigBrother
     private void InitRemindMe()
     {
         LoadReminders();
-        commands.Add(new Command("remindMe", " ([0-9]+)([mhd]) (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
+        commands.Add(new Command("remindMe", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
         Remind();
     }
 
@@ -95,35 +95,39 @@ internal partial class BigBrother
 
     private async Task RemindMe(IMessage message, GroupCollection args)
     {
-        ulong duration;
-        if (!ulong.TryParse(args[1].Value, out duration))
-        {
-            await SendMessage(message.Channel, "Invalid duration");
-            return;
-        }
-
         DateTime reminderDate = DateTime.Now;
-        switch (args[2].Value.ToUpper())
+        if (args[1].Value != "")
         {
-            case "M":
-                // Minutes
-                reminderDate = reminderDate.AddMinutes(duration);
-                break;
-            case "H":
-                // Hours
-                reminderDate = reminderDate.AddHours(duration);
-                break;
-            case "D":
-                // Days
-                reminderDate = reminderDate.AddDays(duration);
-                break;
-            default:
-                await SendMessage(message.Channel, "Something really wrong just happened");
-                await DebugLog("You messed up big times");
+            double days;
+            if (!double.TryParse(args[1].Value, out days) || days > 365000)
+            {
+                await SendMessage(message.Channel, "No need, you'll be dead by then");
                 return;
+            }
+            reminderDate = reminderDate.AddDays(days);
+        }
+        if (args[2].Value != "")
+        {
+            double hours;
+            if (!double.TryParse(args[3].Value, out hours))
+            {
+                await SendMessage(message.Channel, "Invalid duration");
+                return;
+            }
+            reminderDate = reminderDate.AddHours(hours);
+        }
+        if (args[3].Value != "")
+        {
+            double minutes;
+            if (!double.TryParse(args[3].Value, out minutes))
+            {
+                await SendMessage(message.Channel, "Invalid duration");
+                return;
+            }
+            reminderDate = reminderDate.AddMinutes(minutes);
         }
 
-        Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[3].Value);
+        Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[4].Value);
         reminders.Add(newReminder);
         newReminder.Save(GetPath(REMINDERFOLDER));
         await SendMessage(message.Channel, $"{{{message.Author.Id}}}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
