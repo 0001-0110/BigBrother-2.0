@@ -40,9 +40,16 @@ internal partial class BigBrother
 
     private async Task Quote(IMessage message, GroupCollection args)
     {
+        if (message.Channel.GetChannelType() == ChannelType.DM)
+        {
+            await SendMessage(message.Channel, "This command is only available on a server");
+            return;
+        }
+
         SocketGuild? guild = GetGuild(message.Channel);
         if (guild == null)
             throw new Exception("Guild not found");
+
         // Null only if not loaded already
         if (!quotes.ContainsKey(guild.Id))
             await LoadQuotes(guild);

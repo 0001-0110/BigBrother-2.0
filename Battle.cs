@@ -213,6 +213,12 @@ internal partial class BigBrother
 
     private async Task JoinBattle(IMessage message, GroupCollection args)
     {
+        if (message.Channel.GetChannelType() == ChannelType.DM)
+        {
+            await SendMessage(message.Channel, "This command is only available on a server");
+            return;
+        }
+
         Battle? battle = GetBattle(message);
         if (battle == null)
         {
@@ -226,6 +232,12 @@ internal partial class BigBrother
 
     private async Task StartBattle(IMessage message, GroupCollection args)
     {
+        if (message.Channel.GetChannelType() == ChannelType.DM)
+        {
+            await SendMessage(message.Channel, "This command is only available on a server");
+            return;
+        }
+
         Battle? battle = GetBattle(message);
         if (battle == null)
         {
@@ -239,6 +251,12 @@ internal partial class BigBrother
 
     private async Task StopBattle(IMessage message, GroupCollection args)
     {
+        if (message.Channel.GetChannelType() == ChannelType.DM)
+        {
+            await SendMessage(message.Channel, "This command is only available on a server");
+            return;
+        }
+
         Battle? battle = GetBattle(message);
         if (battle == null)
         {

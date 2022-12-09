@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 internal class Reminder
 {
     private readonly static Regex parsingRegex = new Regex("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2})\n([0-9]+)\n([0-9]+)\n(.+)");
+    // used to create unique Ids for each reminder
     private readonly static char[] allowedChars = Enumerable.Range('a', 26).Select(c => (char)c).ToArray();
 
     public string ReminderId;
@@ -135,6 +136,8 @@ internal partial class BigBrother
 
     private async void Remind()
     {
+        // TODO this method do not work for private messages
+
         // Make this method async
         await Task.Yield();
 
@@ -143,7 +146,8 @@ internal partial class BigBrother
 
         while (IsRunning)
         {
-            // TODO might crash if disconnected
+            // Wait for the bot to be ready (In case of disconnection)
+            while (!IsReady) { }
 
             // List of all reminders that have been reminded and must be removed
             List<Reminder> reminded = new List<Reminder>();
