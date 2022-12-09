@@ -102,10 +102,10 @@ internal partial class BigBrother
         return guildSettings[guild.Id];
     }
 
-    private AccessLevel GetAccessLevel(GuildSettings guildSettings, IUser user)
+    private AccessLevel GetAccessLevel(IUser user)
     {
-        if (guildSettings.AccessLevels.ContainsKey(user.Id))
-            return guildSettings.AccessLevels[user.Id];
+        if (settings.AccessLevels.ContainsKey(user.Id))
+            return settings.AccessLevels[user.Id];
         return AccessLevel.Standard;
     }
 
@@ -126,8 +126,8 @@ internal partial class BigBrother
         }
         else
         {
-            GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
-            AccessLevel userAccessLevel = GetAccessLevel(activeGuildSettings, message.Author);
+            // Only display command that this user can access
+            AccessLevel userAccessLevel = GetAccessLevel(message.Author);
             foreach (Command command in commands)
                 if (userAccessLevel >= command.AccessLevel)
                     help += $"\n> {command.Help}";
@@ -164,8 +164,7 @@ internal partial class BigBrother
             return;
         }
 
-        GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
-        AccessLevel userAccessLevel = GetAccessLevel(activeGuildSettings, message.Author);
+        AccessLevel userAccessLevel = GetAccessLevel(message.Author);
         if (userAccessLevel < command.AccessLevel)
         {
             await UnauthorizedUse(message);
