@@ -110,7 +110,7 @@ internal partial class BigBrother
         if (args[2].Value != "")
         {
             double hours;
-            if (!double.TryParse(args[3].Value, out hours))
+            if (!double.TryParse(args[2].Value, out hours))
             {
                 await SendMessage(message.Channel, "Invalid duration");
                 return;

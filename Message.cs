@@ -36,6 +36,7 @@ internal partial class BigBrother
 
     private async Task DeleteMessage(IMessage message)
     {
+        await DebugLog($"Deleting:\n> {message.Content}\n from {message.Author}");
         await message.DeleteAsync();
     }
 

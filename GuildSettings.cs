@@ -29,9 +29,9 @@ internal partial class BigBrother
     private static Regex[] NonFunnyJokes = new Regex[]
     {
         // Feur
-        new Regex("[*. ]*[Ff*.][*. ]*[Ee€3*.][*. ]*[Uu*.][*. ]*[Rr*.][*. ]*"),
+        new Regex("^[*. ]*[Ff*.][*. ]*[Ee€3*.][*. ]*[Uu*.][*. ]*[Rr*.][*. ]*"),
         // Ratio
-        new Regex("[*. ]*[Rr*.][*. ]*[Aa*.][*. ]*[Tt*.][*. ]*[Ii1*.][*. ]*[Oo0*.][*. ]*"),
+        new Regex("^[*. ]*[Rr*.][*. ]*[Aa*.][*. ]*[Tt*.][*. ]*[Ii1*.][*. ]*[Oo0*.][*. ]*"),
     };
 
     private void InitGuildSettings()
@@ -41,7 +41,8 @@ internal partial class BigBrother
             // Hoffnunglos allein
             [854747950973452288] = new GuildSettings(
                 quoteChannelId: 1043646501655683072,
-                eventFile: "Hoffnunglos_allein.csv"),
+                eventFile: "Hoffnunglos_allein.csv",
+                bannedWords: NonFunnyJokes),
 
             // Famille
             [852593538676162570] = new GuildSettings(
