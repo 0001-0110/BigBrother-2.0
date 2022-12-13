@@ -19,6 +19,7 @@ internal class Battle
         private Item requiredItem;
         private string winEvent;
         private string loseEvent;
+        // Unused for now
         public uint Kills;
 
         public Event(Item requiredItem, string winEvent, string loseEvent)
@@ -205,9 +206,12 @@ internal partial class BigBrother
         SocketGuild? guild = GetGuild(message.Channel);
         if (guild == null)
             throw new Exception("Guild was not found");
+
+        // If no battle exists, create a new one
         if (!battles.ContainsKey(guild.Id))
             if (guildSettings[guild.Id].EventsFile != null)
                 battles[guild.Id] = new Battle(GetPath(EVENTFOLDER, guildSettings[guild.Id].EventsFile!));
+
         return battles[guild.Id];
     }
 

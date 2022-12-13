@@ -29,9 +29,9 @@ internal partial class BigBrother
     private static Regex[] NonFunnyJokes = new Regex[]
     {
         // Feur
-        new Regex("^[*. ]*[Ff*.][*. ]*[Ee€3*.][*. ]*[Uu*.][*. ]*[Rr*.][*. ]*"),
+        new Regex("^[*. ]*[Ff.][*. ]*[Ee€3*.][*. ]*[Uu*.][*. ]*[Rr.][*. ]*"),
         // Ratio
-        new Regex("^[*. ]*[Rr*.][*. ]*[Aa*.][*. ]*[Tt*.][*. ]*[Ii1*.][*. ]*[Oo0*.][*. ]*"),
+        new Regex("^[*. ]*[Rr.][*. ]*[Aa*.][*. ]*[Tt*.][*. ]*[Ii1*.][*. ]*[Oo0*.][. ]*"),
     };
 
     private void InitGuildSettings()

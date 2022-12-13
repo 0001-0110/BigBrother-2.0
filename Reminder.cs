@@ -8,30 +8,39 @@ internal class Reminder
     // used to create unique Ids for each reminder
     private readonly static char[] allowedChars = Enumerable.Range('a', 26).Select(c => (char)c).ToArray();
 
-    public string ReminderId;
+    public ulong ReminderId;
     public DateTime DateTime;
     public ulong UserId;
     public ulong ChannelId;
     public string Text;
 
-    public static Reminder? Load(string folderPath, string reminderId)
+    public static Reminder? Load(string folderPath, string filePath)
     {
         string text;
-        using (StreamReader streamReader = new StreamReader(Path.Combine(folderPath, reminderId)))
+        using (StreamReader streamReader = new StreamReader(Path.Combine(folderPath, filePath)))
             text = streamReader.ReadToEnd();
 
         if (!parsingRegex.IsMatch(text))
             return null;
 
-        // TODO TryParse may avoid some errors
-        GroupCollection data = parsingRegex.Match(text).Groups;
-        DateTime dateTime = DateTime.Parse(data[1].Value);
-        ulong userId = ulong.Parse(data[2].Value);
-        ulong channelId = ulong.Parse(data[3].Value);
-        return new Reminder(dateTime, userId, channelId, data[4].Value, reminderId);
+        // TODO this is not the way it should be done
+        try
+        {
+            // TODO TryParse may avoid some errors
+            GroupCollection data = parsingRegex.Match(text).Groups;
+            ulong reminderId = ulong.Parse(filePath);
+            DateTime dateTime = DateTime.Parse(data[1].Value);
+            ulong userId = ulong.Parse(data[2].Value);
+            ulong channelId = ulong.Parse(data[3].Value);
+            return new Reminder(dateTime, userId, channelId, data[4].Value, reminderId);
+        }
+        catch
+        {
+            return null;
+        }
     }
 
-    public Reminder(DateTime dateTime, ulong userId, ulong channelId, string text, string reminderId = "")
+    public Reminder(DateTime dateTime, ulong userId, ulong channelId, string text, ulong reminderId = 0)
     {
         ReminderId = reminderId;
         DateTime = dateTime;
@@ -42,30 +51,34 @@ internal class Reminder
 
     public override string ToString()
     {
+        return $"{ReminderId}. {DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}: {Text}";
+    }
+
+    private void SetId(string folderPath, int length = 12)
+    {
+        ulong newId = 1;
+        while (File.Exists(Path.Combine(folderPath, newId.ToString())))
+            newId++;
+        ReminderId = newId;
+    }
+
+    // Return this object under a format adapted to save it in a file
+    private string ToText()
+    {
         // TODO some comments would be nice
         return $"{DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}\n{UserId}\n{ChannelId}\n{Text}";
     }
 
-    private void SetRandomId(string folderPath, int length = 12)
-    {
-        Random random = new Random();
-        do {
-            ReminderId = "";
-            for (int i = 0; i < length; i++)
-                ReminderId += allowedChars[random.Next(0, allowedChars.Length)];
-        } while (File.Exists(Path.Combine(folderPath, ReminderId)));
-    }
-
     public void Save(string folderPath)
     {
-        if (ReminderId == "")
-            SetRandomId(folderPath);
+        if (ReminderId == 0)
+            SetId(folderPath);
 
-        string fileName = Path.Combine(folderPath, ReminderId);
+        string fileName = Path.Combine(folderPath, ReminderId.ToString());
         if (File.Exists(fileName))
             throw new Exception("File already exists");
         using (StreamWriter streamWriter = new StreamWriter(fileName))
-            streamWriter.WriteLine(ToString());
+            streamWriter.WriteLine(ToText());
     }
 }
 
@@ -80,7 +93,11 @@ internal partial class BigBrother
     {
         LoadReminders();
         commands.Add(new Command("remindMe", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
-        Remind();
+        commands.Add(new Command("seeReminders", "` -> Display all of your upcoming reminders", SeeReminders));
+        // TODO add command to remove reminders
+        
+        // Add Remind to client.Ready so that it is executed as soon as the client is ready
+        client.Ready += Remind;
     }
 
     private void LoadReminders()
@@ -134,15 +151,20 @@ internal partial class BigBrother
         await SendMessage(message.Channel, $"{{{message.Author.Id}}}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
     }
 
-    private async void Remind()
+    private async Task SeeReminders(IMessage message, GroupCollection args)
+    {
+        string reminderString = "";
+
+        foreach (Reminder reminder in reminders)
+            if (reminder.UserId == message.Author.Id)
+                reminderString += $"{reminder}\n";
+
+        await SendMessage(message.Channel, reminderString);
+    }
+
+    private async Task Remind()
     {
         // TODO this method do not work for private messages
-
-        // Make this method async
-        await Task.Yield();
-
-        // Wait for the bot to be ready
-        while (!IsReady) { }
 
         while (IsRunning)
         {
@@ -164,9 +186,10 @@ internal partial class BigBrother
             foreach (Reminder reminder in reminded)
             {
                 reminders.Remove(reminder);
-                File.Delete(GetPath(REMINDERFOLDER, reminder.ReminderId));
+                File.Delete(GetPath(REMINDERFOLDER, reminder.ReminderId.ToString()));
             }
 
+            // Wait a minute before the next reminders
             await Task.Delay(60000);
         }
     }

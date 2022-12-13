@@ -74,6 +74,7 @@ internal partial class BigBrother
         InitDice();
         InitQuote();
         InitInsult();
+        InitWriter();
         InitBattle();
         InitHangman();
     }
