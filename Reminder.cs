@@ -40,7 +40,7 @@ internal class Reminder
         }
     }
 
-    public Reminder(DateTime dateTime, ulong userId, ulong channelId, string text, ulong reminderId = 0)
+    public Reminder(DateTime dateTime, ulong userId, ulong channelId, string text, ulong reminderId)
     {
         ReminderId = reminderId;
         DateTime = dateTime;
@@ -51,16 +51,10 @@ internal class Reminder
 
     public override string ToString()
     {
-        return $"{ReminderId}. {DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}: {Text}";
+        return $"> {ReminderId}. {DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}: {Text}";
     }
 
-    private void SetId(string folderPath, int length = 12)
-    {
-        ulong newId = 1;
-        while (File.Exists(Path.Combine(folderPath, newId.ToString())))
-            newId++;
-        ReminderId = newId;
-    }
+    
 
     // Return this object under a format adapted to save it in a file
     private string ToText()
@@ -71,9 +65,6 @@ internal class Reminder
 
     public void Save(string folderPath)
     {
-        if (ReminderId == 0)
-            SetId(folderPath);
-
         string fileName = Path.Combine(folderPath, ReminderId.ToString());
         if (File.Exists(fileName))
             throw new Exception("File already exists");
@@ -98,6 +89,15 @@ internal partial class BigBrother
 
         // Add Remind to client.Ready so that it is executed as soon as the client is ready
         Task.Run(Remind);
+    }
+
+    private ulong GetNewId()
+    {
+        ulong newId = 0;
+        // Search for the first available id
+        while (reminders.Any(reminder => reminder.ReminderId == newId))
+            newId++;
+        return newId;
     }
 
     private void LoadReminders()
@@ -145,7 +145,7 @@ internal partial class BigBrother
             reminderDate = reminderDate.AddMinutes(minutes);
         }
 
-        Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[4].Value);
+        Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[4].Value, GetNewId());
         reminders.Add(newReminder);
         newReminder.Save(GetPath(REMINDERFOLDER));
         await SendMessage(message.Channel, $"{{{message.Author.Id}}}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
