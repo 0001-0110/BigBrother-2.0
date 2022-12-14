@@ -60,7 +60,8 @@ internal class Writer
         Queue<string> previousWords = new Queue<string>(depth);
         previousWords.Enqueue("");
 
-        while (true)
+        // TODO
+        while (false)
         {
             writingTree.GetNextWord(previousWords);
         }
@@ -87,6 +88,9 @@ internal partial class BigBrother
 
     private async Task InitWriters()
     {
+        if (!Directory.Exists(GetPath(TEXTFOLDER)))
+            return;
+
         // Init all built in writers
         foreach (string folder in Directory.GetDirectories(GetPath(TEXTFOLDER)))
         {
