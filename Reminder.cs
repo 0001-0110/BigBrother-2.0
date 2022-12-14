@@ -95,9 +95,9 @@ internal partial class BigBrother
         commands.Add(new Command("remindMe", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
         commands.Add(new Command("seeReminders", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders
-        
+
         // Add Remind to client.Ready so that it is executed as soon as the client is ready
-        client.Ready += Remind;
+        Task.Run(Remind);
     }
 
     private void LoadReminders()
@@ -165,6 +165,9 @@ internal partial class BigBrother
     private async Task Remind()
     {
         // TODO this method do not work for private messages
+
+        // Wait for the bot to be ready
+        while (!IsReady) { }
 
         while (IsRunning)
         {

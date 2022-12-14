@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Texts\" />
     <Folder Include="Data\Reminders\" />
   </ItemGroup>
 
