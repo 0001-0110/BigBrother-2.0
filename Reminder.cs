@@ -87,8 +87,8 @@ internal partial class BigBrother
         commands.Add(new Command("seeReminders", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders
 
-        // Add Remind to client.Ready so that it is executed as soon as the client is ready
-        Task.Run(Remind);
+        // Run remind without awaiting so that it doesn't stop the main thread
+        Remind();
     }
 
     private ulong GetNewId()
@@ -162,17 +162,17 @@ internal partial class BigBrother
         await SendMessage(message.Channel, reminderString);
     }
 
-    private async Task Remind()
+    private async void Remind(int delay=60000)
     {
         // TODO this method do not work for private messages
 
         // Wait for the bot to be ready
-        while (!IsReady) { }
+        while (!IsReady) { await Task.Delay(delay); }
 
         while (IsRunning)
         {
             // Wait for the bot to be ready (In case of disconnection)
-            while (!IsReady) { }
+            while (!IsReady) { await Task.Delay(delay);  }
 
             // List of all reminders that have been reminded and must be removed
             List<Reminder> reminded = new List<Reminder>();
@@ -193,7 +193,7 @@ internal partial class BigBrother
             }
 
             // Wait a minute before the next reminders
-            await Task.Delay(60000);
+            await Task.Delay(delay);
         }
     }
 }
