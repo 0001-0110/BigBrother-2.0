@@ -5,8 +5,6 @@ using System.Text.RegularExpressions;
 internal class Reminder
 {
     private readonly static Regex parsingRegex = new Regex("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2})\n([0-9]+)\n([0-9]+)\n(.+)");
-    // used to create unique Ids for each reminder
-    private readonly static char[] allowedChars = Enumerable.Range('a', 26).Select(c => (char)c).ToArray();
 
     public ulong ReminderId;
     public DateTime DateTime;
@@ -86,6 +84,7 @@ internal partial class BigBrother
         commands.Add(new Command("remindMe", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
         commands.Add(new Command("seeReminders", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders
+        commands.Add(new Command("removeReminder", " ([0-9]+)", " <Id>` -> Delete the reminder with the given Id", RemoveReminder));
 
         // Run remind without awaiting so that it doesn't stop the main thread
         Remind();
@@ -160,6 +159,31 @@ internal partial class BigBrother
                 reminderString += $"{reminder}\n";
 
         await SendMessage(message.Channel, reminderString);
+    }
+
+    private async Task RemoveReminder(IMessage message, GroupCollection args)
+    {
+        ulong id;
+        if (!ulong.TryParse(args[1].Value, out id))
+        {
+            await SendMessage(message.Channel, "Invalid id");
+            return;
+        }
+
+        foreach (Reminder reminder in reminders)
+            if (id == reminder.ReminderId)
+            {
+                if (message.Author.Id != reminder.UserId)
+                    await SendMessage(message.Channel, "You cannot remove a reminder that belongs to someone else");
+                else
+                {
+                    reminders.Remove(reminder);
+                    await SendMessage(message.Channel, "The reminder has been removed");
+                }
+                return;
+            }
+
+        await SendMessage(message.Channel, "There is no reminder with this id");
     }
 
     private async void Remind(int delay=60000)
