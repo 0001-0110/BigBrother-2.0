@@ -110,6 +110,12 @@ internal partial class BigBrother
         }
     }
 
+    private void DeleteReminder(Reminder reminder)
+    {
+        reminders.Remove(reminder);
+        File.Delete(GetPath(REMINDERFOLDER, reminder.ReminderId.ToString()));
+    }
+
     private async Task RemindMe(IMessage message, GroupCollection args)
     {
         DateTime reminderDate = DateTime.Now;
@@ -177,7 +183,7 @@ internal partial class BigBrother
                     await SendMessage(message.Channel, "You cannot remove a reminder that belongs to someone else");
                 else
                 {
-                    reminders.Remove(reminder);
+                    DeleteReminder(reminder);
                     await SendMessage(message.Channel, "The reminder has been removed");
                 }
                 return;
@@ -212,8 +218,7 @@ internal partial class BigBrother
 
             foreach (Reminder reminder in reminded)
             {
-                reminders.Remove(reminder);
-                File.Delete(GetPath(REMINDERFOLDER, reminder.ReminderId.ToString()));
+                DeleteReminder(reminder);
             }
 
             // Wait a minute before the next reminders
