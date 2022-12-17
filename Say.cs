@@ -5,7 +5,7 @@ internal partial class BigBrother
 {
     void InitSay()
     {
-        commands.Add(new Command("say", " ([0-9]+) (.*)", "<channelId> <message>` -> Send the message in the given channel", Say, AccessLevel.Admin));
+        commands.Add(new Command("say", " ([0-9]+) (.*)", " <channelId> <message>` -> Send the message in the given channel", Say, AccessLevel.Admin));
     }
 
     private async Task Say(IMessage message, GroupCollection args)

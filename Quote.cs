@@ -9,7 +9,7 @@ internal partial class BigBrother
 
     private void InitQuote()
     {
-        commands.Add(new Command("reloadQuotes", "` -> This is quite explicit", LoadQuotes, AccessLevel.Moderator));
+        commands.Add(new Command("reloadquotes", "` -> This is quite explicit", LoadQuotes, AccessLevel.Moderator));
         commands.Add(new Command("quote", "` -> Display a random quote from the quote channel", Quote));
     }
 

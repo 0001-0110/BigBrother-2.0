@@ -31,8 +31,8 @@ internal class Command
     {
         Name = name;
         string prefixedCommand = $"^{Prefix}{name}";
-        commandRegex = new Regex(prefixedCommand);
-        commandRegexArgs = new Regex($"{prefixedCommand}{argsRegex}$");
+        commandRegex = new Regex(prefixedCommand, RegexOptions.IgnoreCase);
+        commandRegexArgs = new Regex($"{prefixedCommand}{argsRegex}$", RegexOptions.IgnoreCase);
         Help = $"> `{Prefix}{name}{help}";
         execute = function;
         AccessLevel = accessLevel;

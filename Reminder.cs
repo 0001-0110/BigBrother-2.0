@@ -81,10 +81,10 @@ internal partial class BigBrother
     private void InitRemindMe()
     {
         LoadReminders();
-        commands.Add(new Command("remindMe", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
-        commands.Add(new Command("seeReminders", "` -> Display all of your upcoming reminders", SeeReminders));
+        commands.Add(new Command("remindme", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
+        commands.Add(new Command("seereminders", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders
-        commands.Add(new Command("removeReminder", " ([0-9]+)", " <Id>` -> Delete the reminder with the given Id", RemoveReminder));
+        commands.Add(new Command("removereminder", " ([0-9]+)", " <Id>` -> Delete the reminder with the given Id", RemoveReminder));
 
         // Run remind without awaiting so that it doesn't stop the main thread
         Remind();
