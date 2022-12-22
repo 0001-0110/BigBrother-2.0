@@ -82,12 +82,13 @@ internal partial class BigBrother
     {
         LoadReminders();
         commands.Add(new Command("remindme", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
-        commands.Add(new Command("seereminders", "` -> Display all of your upcoming reminders", SeeReminders));
+        commands.Add(new Command("reminderlist", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders
         commands.Add(new Command("removereminder", " ([0-9]+)", " <Id>` -> Delete the reminder with the given Id", RemoveReminder));
 
         // Run remind without awaiting so that it doesn't stop the main thread
         Remind();
+        onReady += Remind;
     }
 
     private ulong GetNewId()
@@ -192,12 +193,11 @@ internal partial class BigBrother
         await SendMessage(message.Channel, "There is no reminder with this id");
     }
 
-    private async void Remind(int delay=60000)
+    private void Remind() { Remind(60000); }
+
+    private async void Remind(int delay)
     {
         // TODO this method do not work for private messages
-
-        // Wait for the bot to be ready
-        while (!IsReady) { await Task.Delay(delay); }
 
         while (IsRunning)
         {
@@ -221,7 +221,7 @@ internal partial class BigBrother
                 DeleteReminder(reminder);
             }
 
-            // Wait a minute before the next reminders
+            // Wait delay before the next reminders
             await Task.Delay(delay);
         }
     }

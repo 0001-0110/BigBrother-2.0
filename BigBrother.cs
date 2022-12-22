@@ -9,6 +9,7 @@ internal partial class BigBrother
     private bool IsRunning;
     private bool IsReady;
     private DiscordSocketClient client;
+    private Action onReady;
     private Settings settings;
     Dictionary<ulong, GuildSettings> guildSettings;
 
@@ -71,12 +72,24 @@ internal partial class BigBrother
 
         logChannel = await client.GetChannelAsync(settings.LogChannelId) as IMessageChannel;
 
+        await client.SetStatusAsync(UserStatus.Online);
         if (settings.StatusType != null)
             await client.SetGameAsync(settings.Status, type: (ActivityType)settings.StatusType);
+
+        onReady.Invoke();
+    }
+
+    private async Task Disconnect()
+    {
+        IsRunning = false;
+        await client.StopAsync();
+        await client.LogoutAsync();
     }
 
     private async Task Disconnected(Exception exception)
     {
+        await client.SetStatusAsync(UserStatus.Offline);
+
         IsReady = false;
     }
 }
