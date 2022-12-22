@@ -1,11 +1,11 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Newtonsoft.Json;
+using System.Text;
 using System.Text.RegularExpressions;
 
 internal partial class BigBrother
 {
-    private static Regex replaceIds = new Regex("{([0-9]*)}");
-
     private async Task SendMessage(ulong channelId, string message, bool isTTS=false)
     {
         IMessageChannel? channel = client.GetChannel(channelId) as IMessageChannel;
@@ -17,15 +17,6 @@ internal partial class BigBrother
         if (channel == null)
             return;
 
-        Match match = replaceIds.Match(message);
-        for (int i = 1; i < match.Groups.Count; i++)
-        {
-            var idString = match.Groups[i].Value;
-            ulong id;
-            if (ulong.TryParse(idString, out id))
-                // TODO make this prettier (restructure this wild string)
-                message = Regex.Replace(message, "{([0-9]*)}", MentionUtils.MentionUser(id));
-        }
         await channel.SendMessageAsync(message, isTTS);
     }
 
@@ -68,6 +59,42 @@ internal partial class BigBrother
         {
             await DeleteMessage(message);
             return;
+        }
+
+        // If the bot is mentioned, uses chatGPT to answer
+        if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id))
+        {
+            // TODO hide this in a file
+            string apiKey = "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";
+
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+                var request = new
+                {
+                    model = "text-davinci-003",
+                    prompt = $"{message.Content}\n",
+                    max_tokens = 2048,
+                    // I want Big Brother to be creative
+                    temperature = 0.9
+                };
+
+                var response = await client.PostAsync($"https://api.openai.com/v1/completions",
+                    new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json"));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string json = await response.Content.ReadAsStringAsync();
+                    dynamic data = JsonConvert.DeserializeObject(json);
+                    string answer = data.choices[0].text;
+
+                    // TODO adapt this for DMs
+                    //IGuild guild = GetGuild(message.Channel);
+                    //if (answer.Contains(guild.EveryoneRole.Mention))
+                    await SendMessage(message.Channel, answer);
+                }
+            }
         }
     }
 }
