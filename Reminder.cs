@@ -154,7 +154,7 @@ internal partial class BigBrother
         Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[4].Value, GetNewId());
         reminders.Add(newReminder);
         newReminder.Save(GetPath(REMINDERFOLDER));
-        await SendMessage(message.Channel, $"{{{message.Author.Id}}}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
+        await SendMessage(message.Channel, $"{MentionUtils.MentionUser(message.Author.Id)}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
     }
 
     private async Task SeeReminders(IMessage message, GroupCollection args)
@@ -211,7 +211,7 @@ internal partial class BigBrother
             {
                 if (reminder.DateTime <= DateTime.Now)
                 {
-                    await SendMessage(reminder.ChannelId, $"{{{reminder.UserId}}}, I have to remind you:\n> {reminder.Text}");
+                    await SendMessage(reminder.ChannelId, $"{MentionUtils.MentionUser(reminder.UserId)}, I have to remind you:\n> {reminder.Text}");
                     reminded.Add(reminder);
                 }
             }
