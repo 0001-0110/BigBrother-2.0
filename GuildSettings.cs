@@ -8,18 +8,18 @@ internal class GuildSettings
     public ulong BotChannelId;
     public ulong QuoteChannelId;
 
+    public ulong[] OnDemandRoles;
     public Regex[] BannedWords;
     public string? EventsFile;
 
-    public GuildSettings(ulong quoteChannelId = 0, ulong botChannelId = 0, Regex[]? bannedWords = null, string? eventFile = null)
+    public GuildSettings(ulong quoteChannelId = 0, ulong botChannelId = 0, ulong[]? onDemandRoles = null, Regex[]? bannedWords = null, string? eventFile = null)
     {
         QuoteChannelId = quoteChannelId;
         IsBotchannelOnly = botChannelId != 0;
         BotChannelId = botChannelId;
 
-        if (bannedWords == null)
-            bannedWords = new Regex[0];
-        BannedWords = bannedWords;
+        OnDemandRoles = onDemandRoles ?? new ulong[0];
+        BannedWords = bannedWords ?? new Regex[0];
         EventsFile = eventFile;
     }
 }
@@ -41,6 +41,11 @@ internal partial class BigBrother
             // Hoffnunglos allein
             [854747950973452288] = new GuildSettings(
                 quoteChannelId: 1043646501655683072,
+                onDemandRoles: new ulong[] 
+                {
+                    // test role
+                    1055154370905378847,
+                },
                 eventFile: "Hoffnunglos_allein.csv",
                 bannedWords: NonFunnyJokes),
 
@@ -54,6 +59,11 @@ internal partial class BigBrother
                 quoteChannelId: 943492494656684103,
                 bannedWords: NonFunnyJokes,
                 eventFile: "UNO.csv"),
+
+            // Zagreb
+            [999788857392378008] = new GuildSettings(
+                quoteChannelId: 1043455400151896175
+                ),
 
             // 22e
             [683305502763122688] = new GuildSettings(

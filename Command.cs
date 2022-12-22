@@ -66,16 +66,18 @@ internal partial class BigBrother
 
     private void InitAllCommands()
     {
-        commands.Add(new Command("help", "(?: ([a-zA-Z]*))?", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Limited));
+        commands.Add(new Command("help", "(?: ([a-zA-Z]*))?", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Blacklist));
 
         InitQuit();
         InitSay();
+        //InitRoles();
         InitRemindMe();
         InitDice();
         InitQuote();
         InitInsult();
         InitWriter();
         InitBattle();
+        InitChess();
         InitHangman();
     }
 
