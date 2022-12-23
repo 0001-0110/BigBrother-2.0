@@ -6,6 +6,15 @@ using System.Text.RegularExpressions;
 
 internal partial class BigBrother
 {
+    private const string OPENAIAPIKEYFILE = "OpenAIAPIKey";
+    private string openAIKey;
+
+    private void InitMessages()
+    {
+        using (StreamReader streamReader = new StreamReader(OPENAIAPIKEYFILE))
+            openAIKey = streamReader.ReadToEnd();
+    }
+
     private async Task SendMessage(ulong channelId, string message, bool isTTS=false)
     {
         IMessageChannel? channel = client.GetChannel(channelId) as IMessageChannel;
@@ -64,12 +73,9 @@ internal partial class BigBrother
         // If the bot is mentioned, uses chatGPT to answer
         if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id))
         {
-            // TODO hide this in a file
-            string apiKey = "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";
-
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIKey}");
 
                 var request = new
                 {
