@@ -6,12 +6,13 @@ using System.Text.RegularExpressions;
 
 internal partial class BigBrother
 {
-    private const string OPENAIAPIKEYFILE = "OpenAIAPIKey";
+    private const string OPENAIAPIKEYFILE = "OpenAIAPIKey.txt";
     private string openAIKey;
 
     private void InitMessage()
     {
-        using (StreamReader streamReader = new StreamReader(OPENAIAPIKEYFILE))
+        // TODO handle that safely
+        using (StreamReader streamReader = new StreamReader(GetPath(OPENAIAPIKEYFILE)))
             openAIKey = streamReader.ReadToEnd();
 
         commands.Add(new Command("say", " ([0-9]+) (.*)", " <channelId> <message>` -> Send the message in the given channel", Say, AccessLevel.Admin));
