@@ -28,7 +28,6 @@ internal partial class BigBrother
             new DiscordSocketConfig() { GatewayIntents = GatewayIntents.All });
         client.Log += Log;
         client.Ready += ClientReady;
-        client.Disconnected += Disconnected;
         client.MessageReceived += MessageReceived;
 
         commands = new List<Command>();
@@ -47,8 +46,8 @@ internal partial class BigBrother
 
         while (IsRunning)
             await Task.Delay(5000);
-        await client.LogoutAsync();
-        await client.StopAsync();
+
+        await Disconnect();
     }
 
     private async Task Log(LogMessage log)
@@ -81,15 +80,10 @@ internal partial class BigBrother
 
     private async Task Disconnect()
     {
+        await client.SetStatusAsync(UserStatus.Offline);
+        IsReady = false;
         IsRunning = false;
         await client.StopAsync();
         await client.LogoutAsync();
-    }
-
-    private async Task Disconnected(Exception exception)
-    {
-        await client.SetStatusAsync(UserStatus.Offline);
-
-        IsReady = false;
     }
 }
