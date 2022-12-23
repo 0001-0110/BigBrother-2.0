@@ -69,7 +69,7 @@ internal partial class BigBrother
         commands.Add(new Command("help", "(?: ([a-zA-Z]*))?", " <command=\"\">` -> Display help for the given command, or all available commands if none is given", Help, AccessLevel.Blacklist));
 
         InitQuit();
-        InitSay();
+        InitMessage();
         //InitRoles();
         InitRemindMe();
         InitDice();

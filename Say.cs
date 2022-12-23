@@ -1,7 +1,7 @@
 ﻿using Discord;
 using System.Text.RegularExpressions;
 
-internal partial class BigBrother
+/*internal partial class BigBrother
 {
     void InitSay()
     {
@@ -26,4 +26,4 @@ internal partial class BigBrother
 
         await SendMessage(channelId, args[2].Value);
     }
-}
+}*/
