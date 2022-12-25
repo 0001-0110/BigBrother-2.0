@@ -76,6 +76,13 @@ internal partial class BigBrother
         // If the bot is mentioned, uses chatGPT to answer
         if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id))
         {
+            // This feature is only available until April 1st 2023
+            if (DateTime.Now > new DateTime(2023, 04, 01))
+            {
+                await SendMessage(message.Channel, "This feature is no longer available");
+                return;
+            }
+
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIKey}");
