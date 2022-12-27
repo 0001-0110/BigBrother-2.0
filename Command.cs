@@ -70,7 +70,7 @@ internal partial class BigBrother
 
         InitQuit();
         InitMessage();
-        //InitRoles();
+        InitRoles();
         InitRemindMe();
         InitDice();
         InitQuote();
