@@ -1,8 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-
-internal partial class Extensions
+﻿internal partial class Extensions
 {
+    // Used for debug
     public static string Repr<T>(this T[,] matrix)
     {
         string result = "";
@@ -18,16 +16,7 @@ internal partial class Extensions
 
 internal static class StringService
 {
-    private static int Min(params int[] values)
-    {
-        int min = values[0];
-
-        foreach (int value in values)
-            if (value < min)
-                min = value;
-
-        return min;
-    }
+    
 
     /// <summary>
     /// Computes the number of edits required to transform one string to another. The edits count the following as an operation:
@@ -39,8 +28,14 @@ internal static class StringService
     /// <param name="str1"></param>
     /// <param name="str2"></param>
     /// <returns></returns>
-    public static int LevenshteinDistance(string str1, string str2)
+    public static int LevenshteinDistance(string str1, string str2, bool caseSensitive = true)
     {
+        if (!caseSensitive)
+        {
+            str1 = str1.ToUpper();
+            str2 = str2.ToUpper();
+        }
+
         int str1Len = str1.Length;
         int str2Len = str2.Length;
 
@@ -60,7 +55,7 @@ internal static class StringService
             for (int x = 1; x < str2Len + 1; x++)
             {
                 // Add one if str1[:x - 1] is not equal to str2[:y - i]
-                matrix[y, x] = Min(matrix[y - 1, x], matrix[y, x - 1], matrix[y - 1, x - 1]) + (str2.Substring(0, x) != str1.Substring(0, y) ? 1 : 0);
+                matrix[y, x] = IntService.Min(matrix[y - 1, x], matrix[y, x - 1], matrix[y - 1, x - 1]) + (str2.Substring(0, x) != str1.Substring(0, y) ? 1 : 0);
             }
         }
 
