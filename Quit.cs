@@ -11,7 +11,7 @@ internal partial class BigBrother
     private async Task Quit(IMessage message, GroupCollection args)
     {
         await SendMessage(message.Channel, "Let's call it a day!");
-        await DebugLog("Quit command received");
+        DebugLog("Quit command received");
         await Disconnect();
     }
 }

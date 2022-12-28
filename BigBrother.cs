@@ -32,6 +32,7 @@ internal partial class BigBrother
 
         commands = new List<Command>();
 
+        InitDebug();
         InitSettings();
         InitGuildSettings();
 
@@ -52,7 +53,7 @@ internal partial class BigBrother
 
     private async Task Log(LogMessage log)
     {
-        await SendMessage(logChannel, $"```cs\n{log}```");
+        DebugLog(log.ToString());
     }
 
     private async Task Connect()
@@ -67,15 +68,15 @@ internal partial class BigBrother
 
     private async Task ClientReady()
     {
-        IsReady = true;
-
-        logChannel = await client.GetChannelAsync(settings.LogChannelId) as IMessageChannel;
+        //logChannel = await client.GetChannelAsync(settings.LogChannelId) as IMessageChannel;
 
         await client.SetStatusAsync(UserStatus.Online);
         if (settings.StatusType != null)
             await client.SetGameAsync(settings.Status, type: (ActivityType)settings.StatusType);
 
         onReady.Invoke();
+
+        IsReady = true;
     }
 
     private async Task Disconnect()

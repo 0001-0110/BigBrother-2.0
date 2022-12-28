@@ -32,14 +32,11 @@ internal partial class BigBrother
         await channel.SendMessageAsync(message, isTTS);
     }
 
-    private async Task DebugLog(string logMessage)
-    {
-        await SendMessage(logChannel, $"```\n{logMessage}```");
-    }
+
 
     private async Task DeleteMessage(IMessage message)
     {
-        await DebugLog($"Deleting:\n> {message.Content}\n from {message.Author}");
+        DebugLog($"Deleting:\n> {message.Content}\n from {message.Author}");
         await message.DeleteAsync();
     }
 

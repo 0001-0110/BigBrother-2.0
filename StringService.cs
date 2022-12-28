@@ -1,20 +1,4 @@
-﻿internal partial class Extensions
-{
-    // Used for debug
-    public static string Repr<T>(this T[,] matrix)
-    {
-        string result = "";
-        for (int x = 0; x < matrix.GetLength(1); x++)
-        {
-            for (int y = 0; y < matrix.GetLength(0); y++)
-                result += $"{matrix[y, x]}, ";
-            result += "\n";
-        }
-        return result;
-    }
-}
-
-internal static class StringService
+﻿internal static class StringService
 {
     
 
