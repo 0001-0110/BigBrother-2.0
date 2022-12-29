@@ -47,7 +47,11 @@ namespace Services
 
         public IEnumerable<T?> GetValues<T>(string elementName)
         {
-            foreach (XElement element in document.Root.Elements(elementName))
+            XElement parentElement = document.Root.Element(elementName);
+            if (parentElement == null)
+                yield break;
+
+            foreach (XElement element in parentElement.Elements())
                 yield return GetValue<T>(element);
         }
     }

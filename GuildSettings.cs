@@ -37,6 +37,8 @@ internal partial class BigBrother
         guildSettings = new Dictionary<ulong, GuildSettings>();
         foreach (string path in Directory.GetFiles(GetPath(GUILDSETTINGSFOLDERPATH)))
             LoadGuildSettings(path);
+
+        DebugLog("YUP");
     }
 
     private void LoadGuildSettings(string path)
@@ -45,12 +47,12 @@ internal partial class BigBrother
         if (xmlService == null)
             return;
 
+        ulong guildId = xmlService.GetValue<ulong>("GuildId");
         guildSettings[xmlService.GetValue<ulong>("GuildId")] = new GuildSettings(
             quoteChannelId: xmlService.GetValue<ulong>("QuoteChannelId"),
 
-            // TODO Might be better to use OnDemandRoles childs
-            onDemandRoles: xmlService.GetValues<ulong>("RoleId").ToArray(),
-            bannedWords: xmlService.GetValues<string>("BannedWord").Select(word => new Regex(word)).ToArray(),
+            onDemandRoles: xmlService.GetValues<ulong>("OnDemandRoles").ToArray(),
+            bannedWords: xmlService.GetValues<string>("BannedWords").Select(word => new Regex(word)).ToArray(),
             eventsFile: xmlService.GetValue<string>("EventFilePath")
         );
     }
