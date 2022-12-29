@@ -5,9 +5,5 @@
 /bin
 /obj
 
-# Temporary data
-Data/Reminders
-
-# File containing the token that must stay private
-[Tt]oken.txt
-[Oo]penAIAPIKey.txt
+# Data doesn't need to be on the git repo
+/[Dd]ata
