@@ -23,9 +23,9 @@ internal partial class BigBrother
     {
         quotes[guild.Id] = new List<string>();
 
-        ulong quoteChannelId = guildSettings[guild.Id].QuoteChannelId;
+        ulong? quoteChannelId = guildSettings[guild.Id].QuoteChannelId;
         // null means that this guild has no quote channel
-        if (quoteChannelId == 0)
+        if (quoteChannelId == null)
             return;
 
         IMessageChannel? quoteChannel = client.GetChannel((ulong)quoteChannelId) as IMessageChannel;

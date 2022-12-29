@@ -1,22 +1,19 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 internal class GuildSettings
 {
-    // If this is true, the bot can only read commands in the command channel
-    // still WIP
-    public bool IsBotchannelOnly;
-    public ulong BotChannelId;
-    public ulong QuoteChannelId;
+    public ulong? QuoteChannelId;
 
     public ulong[] OnDemandRoles;
     public Regex[] BannedWords;
     public string? EventsFile;
 
-    public GuildSettings(ulong quoteChannelId = 0, ulong botChannelId = 0, ulong[]? onDemandRoles = null, Regex[]? bannedWords = null, string? eventFile = null)
+    //public GuildSettings() { }
+
+    public GuildSettings(ulong? quoteChannelId = null, ulong[]? onDemandRoles = null, Regex[]? bannedWords = null, string? eventFile = null)
     {
         QuoteChannelId = quoteChannelId;
-        IsBotchannelOnly = botChannelId != 0;
-        BotChannelId = botChannelId;
 
         OnDemandRoles = onDemandRoles ?? new ulong[0];
         BannedWords = bannedWords ?? new Regex[0];
@@ -26,6 +23,8 @@ internal class GuildSettings
 
 internal partial class BigBrother
 {
+    private const string GUILDSETTINGSFOLDERPATH = "Settings\\GuildSettings";
+
     private static Regex[] NonFunnyJokes = new Regex[]
     {
         // Feur
@@ -36,12 +35,19 @@ internal partial class BigBrother
 
     private void InitGuildSettings()
     {
-        guildSettings = new Dictionary<ulong, GuildSettings>()
+        // TODO put all of this in a file
+        guildSettings = new Dictionary<ulong, GuildSettings>();
+        foreach (string path in Directory.GetFiles(GetPath(GUILDSETTINGSFOLDERPATH)))
+            LoadGuildSettings(path);
+
+        DebugLog("InitGuildSettings done");
+
+        /*guildSettings = new Dictionary<ulong, GuildSettings>()
         {
             // Hoffnunglos allein
             [854747950973452288] = new GuildSettings(
                 quoteChannelId: 1043646501655683072,
-                onDemandRoles: new ulong[] 
+                onDemandRoles: new ulong[]
                 {
                     // test role
                     1055154370905378847,
@@ -51,8 +57,7 @@ internal partial class BigBrother
 
             // Famille
             [852593538676162570] = new GuildSettings(
-                quoteChannelId: 1045083207852359710,
-                botChannelId: 1045084490134982768),
+                quoteChannelId: 1045083207852359710),
 
             // UNO
             [902512847207170129] = new GuildSettings(
@@ -65,16 +70,53 @@ internal partial class BigBrother
                 quoteChannelId: 1043455400151896175
                 ),
 
-            // 22e
+            // 22e Division
             [683305502763122688] = new GuildSettings(
-                botChannelId: 1045046572695683072,
+                onDemandRoles: new ulong[]
+                {
+                    // Team Fortress 2
+                    907637378246643782,
+                    // War thunder
+                    906532152072622111,
+                    // Rainbow 6
+                    894679616881586197,
+                    // Sea of thieves
+                    906532281596936212,
+                    // Company of heroes
+                    908391645555347476,
+                    // Post Scriptum
+                    907637525466734652,
+                    // Civilization
+                    907637063166361600,
+                    // Kerbal Space Program
+                    908311272863432705,
+                    // Age of empire
+                    908681308631363604,
+                    // Among us
+                    912068625656057910,
+                },
                 eventFile: "22e.csv"),
 
             // Terminale Generale
             [729417290898079896] = new GuildSettings(
                 quoteChannelId: 742290333848830003,
-                botChannelId: 748871775005179934,
                 eventFile: "Terminale_generale.csv"),
+        };*/
+    }
+
+    private async void LoadGuildSettings(string path)
+    {
+        XmlService? xmlService = XmlService.Load(path);
+        if (xmlService == null)
+            return;
+
+        guildSettings[xmlService.GetValue<ulong>("GuildId")] = new GuildSettings()
+        {
+            QuoteChannelId = xmlService.GetValue<ulong>("QuoteChannelId"),
+
+            OnDemandRoles = xmlService.GetValues<ulong>("RoleId").ToArray(),
+            BannedWords = xmlService.GetValues<string>("BannedWord").Select(word => new Regex(word)).ToArray(),
+            EventsFile = xmlService.GetValue<string>("EventFilePath"),
         };
     }
 }

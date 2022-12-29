@@ -1,4 +1,5 @@
 ﻿using Discord;
+using System.Diagnostics;
 
 internal partial class Extensions
 {
@@ -23,7 +24,7 @@ internal partial class BigBrother
         onReady += async () => logChannel = await client.GetChannelAsync(settings.LogChannelId) as IMessageChannel;
     }
 
-    private void DebugLog(string logMessage)
+    public void DebugLog(string logMessage)
     {
         Thread thread = new Thread(() => SendDebugLog(logMessage));
         thread.Start();

@@ -3,6 +3,8 @@ using Discord.WebSocket;
 
 internal partial class BigBrother
 {
+    public static BigBrother Instance;
+
     private const string TOKENFILE = "token.txt";
     private string localPath;
     
@@ -19,6 +21,8 @@ internal partial class BigBrother
 
     public BigBrother(string localPath)
     {
+        Instance = this;
+
         IsRunning = false;
         IsReady = false;
 
@@ -53,6 +57,7 @@ internal partial class BigBrother
 
     private async Task Log(LogMessage log)
     {
+        await Task.Yield();
         DebugLog(log.ToString());
     }
 
@@ -68,8 +73,6 @@ internal partial class BigBrother
 
     private async Task ClientReady()
     {
-        //logChannel = await client.GetChannelAsync(settings.LogChannelId) as IMessageChannel;
-
         await client.SetStatusAsync(UserStatus.Online);
         if (settings.StatusType != null)
             await client.SetGameAsync(settings.Status, type: (ActivityType)settings.StatusType);
