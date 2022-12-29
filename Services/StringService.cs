@@ -16,6 +16,8 @@
         /// <returns></returns>
         public static int LevenshteinDistance(string str1, string str2, bool caseSensitive = true)
         {
+            // TODO this function is still bugged
+
             if (!caseSensitive)
             {
                 str1 = str1.ToUpper();
