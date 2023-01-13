@@ -18,13 +18,13 @@ internal partial class BigBrother
         commands.Add(new Command("say", " ([0-9]+) (.*)", " <channelId> <message>` -> Send the message in the given channel", Say, AccessLevel.Admin));
     }
 
-    private async Task SendMessage(ulong channelId, string message, bool isTTS=false)
+    private async Task SendMessage(ulong channelId, string message, bool isTTS = false)
     {
         IMessageChannel? channel = client.GetChannel(channelId) as IMessageChannel;
         await SendMessage(channel, message, isTTS);
     }
 
-    private async Task SendMessage(IMessageChannel? channel, string message, bool isTTS=false)
+    private async Task SendMessage(IMessageChannel? channel, string message, bool isTTS = false)
     {
         if (channel == null)
             return;
@@ -42,6 +42,9 @@ internal partial class BigBrother
 
     private bool IsBannedWord(SocketMessage message)
     {
+        if (message.Channel.GetChannelType() == ChannelType.DM)
+            return false;
+
         GuildSettings activeGuildSettings = GetGuildSettings(message.Channel);
         foreach (Regex bannedWord in activeGuildSettings.BannedWords)
             if (bannedWord.IsMatch(message.Content))
@@ -71,7 +74,8 @@ internal partial class BigBrother
         }
 
         // If the bot is mentioned, uses chatGPT to answer
-        if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id))
+        // If the message is private, answer too
+        if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id) || message.Channel.GetChannelType() == ChannelType.DM)
         {
             // This feature is only available until April 1st 2023
             if (DateTime.Now > new DateTime(2023, 04, 01))
@@ -108,6 +112,7 @@ internal partial class BigBrother
                     await SendMessage(message.Channel, answer);
                 }
             }
+            return;
         }
     }
 
