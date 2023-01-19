@@ -73,6 +73,7 @@ internal partial class BigBrother
         InitRoles();
         InitRemindMe();
         InitDice();
+        InitGit();
         InitQuote();
         InitInsult();
         InitWriter();
