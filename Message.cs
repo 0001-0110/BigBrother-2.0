@@ -78,12 +78,14 @@ internal partial class BigBrother
             // This feature is only available until April 1st 2023
             if (DateTime.Now > new DateTime(2023, 04, 01))
             {
-                await SendMessage(message.Channel, "This feature is no longer available");
+                await SendMessage(message.Channel, "This feature is no longer available\nUse this instead: https://chat.openai.com/chat");
                 return;
             }
 
             using (var client = new HttpClient())
             {
+                IDisposable typing = message.Channel.EnterTypingState();
+
                 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {openAIKey}");
 
                 var request = new
@@ -108,7 +110,10 @@ internal partial class BigBrother
                     //IGuild guild = GetGuild(message.Channel);
                     //if (answer.Contains(guild.EveryoneRole.Mention))
                     await SendMessage(message.Channel, answer);
+                    
                 }
+
+                typing.Dispose();
             }
             return;
         }
