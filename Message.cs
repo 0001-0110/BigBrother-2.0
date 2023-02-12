@@ -71,9 +71,11 @@ internal partial class BigBrother
             return;
         }
 
-        // If the bot is mentioned, uses chatGPT to answer
+        // If the bot or the bot role is mentioned, uses chatGPT to answer
         // If the message is private, answer too
-        if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id) || message.Channel.GetChannelType() == ChannelType.DM)
+        if (message.MentionedUsers.Any(user => user.Id == client.CurrentUser.Id) 
+            || message.MentionedRoles.Any(role => GetGuild(message.Channel).CurrentUser.Roles.Contains(role))
+            || message.Channel.GetChannelType() == ChannelType.DM)
         {
             // This feature is only available until April 1st 2023
             if (DateTime.Now > new DateTime(2023, 04, 01))
