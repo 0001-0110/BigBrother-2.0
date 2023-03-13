@@ -33,7 +33,7 @@ internal class Command
         string prefixedCommand = $"^{Prefix}{name}";
         commandRegex = new Regex(prefixedCommand, RegexOptions.IgnoreCase);
         commandRegexArgs = new Regex($"{prefixedCommand}{argsRegex}$", RegexOptions.IgnoreCase);
-        Help = $"> `{Prefix}{name}{help}";
+        Help = $"`{Prefix}{name}{help}";
         execute = function;
         AccessLevel = accessLevel;
     }
@@ -126,7 +126,7 @@ internal partial class BigBrother
                 return;
             }
             else
-                help += $"\n{command.Help}";
+                help += $"{command.Help}\n";
         }
         else
         {
@@ -134,7 +134,7 @@ internal partial class BigBrother
             AccessLevel userAccessLevel = GetAccessLevel(message.Author);
             foreach (Command command in commands)
                 if (userAccessLevel >= command.AccessLevel)
-                    help += $"\n{command.Help}";
+                    help += $"{command.Help}\n";
         }
 
         var embed = new EmbedBuilder
