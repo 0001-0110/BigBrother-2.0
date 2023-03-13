@@ -115,7 +115,7 @@ internal partial class BigBrother
 
     private async Task Help(IMessage message, string args = "")
     {
-        string help = "Help:";
+        string help = "";
         if (args != "")
         {
             Command? command = GetCommandByName(args);
@@ -126,7 +126,7 @@ internal partial class BigBrother
                 return;
             }
             else
-                help += $"\n> {command.Help}";
+                help += $"\n{command.Help}";
         }
         else
         {
@@ -134,9 +134,17 @@ internal partial class BigBrother
             AccessLevel userAccessLevel = GetAccessLevel(message.Author);
             foreach (Command command in commands)
                 if (userAccessLevel >= command.AccessLevel)
-                    help += $"\n> {command.Help}";
+                    help += $"\n{command.Help}";
         }
-        await SendMessage(message.Channel, help);
+
+        var embed = new EmbedBuilder
+        {
+            Title = "Help",
+            Description = help,
+            Color = Color.Blue,
+        }.Build();
+
+        await SendMessage(message.Channel, "",embed);
     }
 
     private async Task Help(IMessage message, GroupCollection args)
