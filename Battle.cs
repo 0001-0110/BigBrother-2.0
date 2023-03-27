@@ -38,21 +38,21 @@ internal class Battle
             if (player.Items.Contains(requiredItem))
             {
                 player.Items.Remove(requiredItem);
-                yield return $"{{{player.Id}}} {winEvent}";
+                yield return $"{MentionUtils.MentionUser(player.Id)} {winEvent}";
             }
             else
             {
                 player.IsAlive = false;
                 alivePlayers.Remove(player);
                 Kills++;
-                yield return $"{{{player.Id}}} {loseEvent}";
+                yield return $"{MentionUtils.MentionUser(player.Id)} {loseEvent}";
             }
         }
 
         public IEnumerable<string> FindItem(Player player)
         {
             player.Items.Add(requiredItem);
-            yield return $"{{{player.Id}}} found {requiredItem.Name}";
+            yield return $"{MentionUtils.MentionUser(player.Id)} found {requiredItem.Name}";
         }
     }
 
@@ -96,7 +96,7 @@ internal class Battle
         events = new List<Event>();
         using (StreamReader streamReader = new StreamReader(filename))
         {
-            foreach (string line in streamReader.ReadToEnd().Split("\n"))
+            foreach (string line in streamReader.ReadToEnd().Split(Environment.NewLine))
             {
                 string[] args = line.Split(",");
                 if (args.Length == 3)
@@ -105,7 +105,7 @@ internal class Battle
         }
     }
 
-    public IEnumerable<string> CreateGame(bool clear=true)
+    public IEnumerable<string> CreateGame(bool clear = true)
     {
         if (IsPlaying)
         {
@@ -138,13 +138,13 @@ internal class Battle
         Player newPlayer = new Player(player.Id, player.Username);
         if (players.Any(alreadyPlaying => alreadyPlaying.Id == newPlayer.Id))
         {
-            yield return $"{{{player.Id}}}, you already joined this battle";
+            yield return $"{MentionUtils.MentionUser(player.Id)}, you already joined this battle";
         }
         else
         {
             players.Add(newPlayer);
             alivePlayers.Add(newPlayer);
-            yield return $"{{{player.Id}}} joins the battle!";
+            yield return $"{MentionUtils.MentionUser(player.Id)} joins the battle!";
         }
     }
 
@@ -176,7 +176,7 @@ internal class Battle
             }
         }
 
-        yield return $"{{{alivePlayers[0].Id}}} is the winner !";
+        yield return $"{MentionUtils.MentionUser(alivePlayers[0].Id)} is the winner !";
         foreach (string thing in StopGame())
             yield return thing;
     }
@@ -207,7 +207,7 @@ internal partial class BigBrother
             // Battles are not available by private messages
             return null;
 
-            SocketGuild? guild = GetGuild(message.Channel);
+        SocketGuild? guild = GetGuild(message.Channel);
         if (guild == null)
             throw new Exception("Guild was not found");
 
