@@ -11,7 +11,7 @@ internal partial class Extensions
         {
             for (int y = 0; y < matrix.GetLength(0); y++)
                 result += $"{matrix[y, x]}, ";
-            result += "\n";
+            result += Environment.NewLine;
         }
         return result;
     }

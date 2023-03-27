@@ -15,7 +15,7 @@ internal partial class BigBrother
     private void LoadInsults()
     {
         using (StreamReader streamReader = new StreamReader(GetPath(INSULTFOLDER, INSULTFILE)))
-            insults = streamReader.ReadToEnd().Split("\n");
+            insults = streamReader.ReadToEnd().Split(Environment.NewLine);
     }
 
     private async Task Insult(IMessage message, GroupCollection args)

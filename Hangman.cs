@@ -98,7 +98,7 @@ internal partial class BigBrother
     private async Task LoadWords()
     {
         using (StreamReader file = new StreamReader(GetPath(WORDLISTFOLDER, WORDLISTFILE)))
-            wordList = (await file.ReadToEndAsync()).Split("\n");
+            wordList = (await file.ReadToEndAsync()).Split(Environment.NewLine);
     }
 
     private async Task<Hangman> GetHangman(IMessage message)
