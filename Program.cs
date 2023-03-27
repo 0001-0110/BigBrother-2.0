@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-
-public static class Program
+﻿public static class Program
 {
-    private static string dataFolder = "C:\\Users\\remi\\OneDrive\\Documents\\travail\\Prog\\C#\\BigBrother\\BigBrother\\Data";
+    private static string dataFolder = "..\\..\\..\\Data";
 
     public static async Task Main(string[] args)
     {

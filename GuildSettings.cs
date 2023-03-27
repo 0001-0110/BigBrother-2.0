@@ -47,7 +47,7 @@ internal partial class BigBrother
         if (xmlService == null)
             return;
 
-        ulong guildId = xmlService.GetValue<ulong>("GuildId");
+        string? eventsFile = xmlService.GetValue<string>("EventFilePath");
         guildSettings[xmlService.GetValue<ulong>("GuildId")] = new GuildSettings(
             quoteChannelId: xmlService.GetValue<ulong>("QuoteChannelId"),
 

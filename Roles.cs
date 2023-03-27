@@ -8,7 +8,7 @@ internal partial class Extensions
     public static bool AlmostEqual(this string str1, string str2, float threshold, bool caseSensitive = true)
     {
         // TODO
-        return (StringService.LevenshteinDistance(str1, str2, caseSensitive)) <= IntService.Min(str1.Length, str2.Length) * threshold;
+        return (StringService.LevenshteinDistance(str1, str2, caseSensitive)) <= IntService.Max(str1.Length, str2.Length) * threshold;
     }
 }
 
@@ -16,7 +16,7 @@ internal partial class BigBrother
 {
     void InitRoles()
     {
-        commands.Add(new Command("addrole", " (.+)", " <role>` -> Gives you the role", AddRole));
+        commands.Add(new Command("getrole", " (.+)", " <role>` -> Gives you the role", AddRole));
         commands.Add(new Command("removerole", " (.+)", " <role>` -> Removes the role from you", RemoveRole));
         commands.Add(new Command("rolelist", "` -> Display the list of all roles that you can demand on this guild", RoleList));
     }
@@ -74,7 +74,37 @@ internal partial class BigBrother
 
     private async Task RemoveRole(IMessage message, GroupCollection args)
     {
-        await SendMessage(message.Channel, $"Not implemented yet, ask {MentionUtils.MentionUser(315827580869804042)} to do it");
+        if (message.Channel.GetChannelType() == ChannelType.DM)
+        {
+            // Roles are not available in private messages
+            await SendMessage(message.Channel, "???");
+            return;
+        }
+
+        SocketGuild? guild = GetGuild(message.Channel);
+
+        SocketRole? newRole = GetRole(args[1].Value, guild);
+        if (newRole == null)
+        {
+            await SendMessage(message.Channel, "This role does not exist, maybe you should check the spelling");
+            return;
+        }
+
+        if (!guildSettings[guild.Id].OnDemandRoles.Any(roleId => roleId == newRole.Id))
+        {
+            await SendMessage(message.Channel, "This role is not on demand");
+            return;
+        }
+
+        // TODO handle warning
+        if (!(message.Author as SocketGuildUser).Roles.Any(role => role.Id == newRole.Id))
+        {
+            await SendMessage(message.Channel, "You don't have this role, you can get it with `!getrole <role>`");
+            return;
+        }
+
+        await (message.Author as IGuildUser).RemoveRoleAsync(newRole);
+        await SendMessage(message.Channel, $"{MentionUtils.MentionUser(message.Author.Id)}: {newRole.Name} role removed");
     }
 
     private async Task RoleList(IMessage message, GroupCollection args)

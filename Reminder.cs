@@ -4,6 +4,13 @@ using System.Text.RegularExpressions;
 
 internal class Reminder
 {
+    /// <summary>
+    /// This regex is meant to accept files that contain (separated by new lines):
+    /// <para> A date, under the format dd/mm/yyyy hh:mm:ss </para>
+    /// <para> A user id </para>
+    /// <para> A channel id </para>
+    /// <para> A text </para>
+    /// </summary>
     private readonly static Regex parsingRegex = new Regex("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2})\n([0-9]+)\n([0-9]+)\n(.+)");
 
     public ulong ReminderId;
@@ -21,7 +28,7 @@ internal class Reminder
         if (!parsingRegex.IsMatch(text))
             return null;
 
-        // TODO this is not the way it should be done
+        // TODO It would probably be better to safely parse each arg one by one
         try
         {
             // TODO TryParse may avoid some errors

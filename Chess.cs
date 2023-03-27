@@ -30,12 +30,12 @@ internal class ChessGame
     {
         public enum Type
         {
-            Pawn,
-            Knight,
-            Bishop,
-            Rook,
-            Queen,
-            King,
+            Pawn = 'p',
+            Knight = 'n',
+            Bishop = 'b',
+            Rook = 'r',
+            Queen = 'q',
+            King = 'k',
         }
 
         public enum Color
@@ -55,8 +55,12 @@ internal class ChessGame
 
         public override string ToString()
         {
-            // TODO Return a representation for human visualization
-            return base.ToString();
+            return color switch
+            {
+                Color.White => $"{type}".ToUpper(),
+                Color.Black => $"{type}".ToLower(),
+                _ => throw new Exception("Was is los ?"),
+            };
         }
     }
 
@@ -125,6 +129,15 @@ internal class ChessGame
             Piece.Type.King => GetKingMoves(position),
             _ => throw new ArgumentException("This type of piece does not exist, do you even know how to play chess ?"),
         };
+    }
+
+    public override string ToString()
+    {
+        string str = "";
+        foreach (Piece piece in board)
+            str += $"{piece}";
+
+        return str;
     }
 
     #endregion
