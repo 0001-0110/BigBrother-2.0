@@ -18,18 +18,18 @@ internal partial class BigBrother
         commands.Add(new Command("say", " ([0-9]+) (.*)", " <channelId> <message>` -> Send the message in the given channel", Say, AccessLevel.Admin));
     }
 
-    private async Task<IUserMessage?> SendMessage(ulong channelId, string message, bool isTTS = false)
+    private async Task<IUserMessage?> SendMessage(ulong channelId, string message, Embed? embed = null, bool isTTS = false)
     {
         IMessageChannel? channel = client.GetChannel(channelId) as IMessageChannel;
-        return await SendMessage(channel, message, isTTS);
+        return await SendMessage(channel, message, embed, isTTS);
     }
 
-    private async Task<IUserMessage?> SendMessage(IMessageChannel? channel, string message, bool isTTS = false)
+    private async Task<IUserMessage?> SendMessage(IMessageChannel? channel, string message, Embed? embed = null, bool isTTS = false)
     {
         if (channel == null)
             return null;
-
-        return await channel.SendMessageAsync(message, isTTS);
+        
+        return await channel.SendMessageAsync(message, isTTS, embed);
     }
 
     private async Task DeleteMessage(IMessage message)
