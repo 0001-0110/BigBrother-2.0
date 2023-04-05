@@ -37,8 +37,6 @@ internal partial class BigBrother
         guildSettings = new Dictionary<ulong, GuildSettings>();
         foreach (string path in Directory.GetFiles(GetPath(GUILDSETTINGSFOLDERPATH)))
             LoadGuildSettings(path);
-
-        DebugLog("YUP");
     }
 
     private void LoadGuildSettings(string path)

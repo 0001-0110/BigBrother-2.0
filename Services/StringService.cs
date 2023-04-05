@@ -2,8 +2,6 @@
 {
     internal static class StringService
     {
-
-
         /// <summary>
         /// Computes the number of edits required to transform one string to another. The edits count the following as an operation:
         /// <list> Insertion of a character </list>

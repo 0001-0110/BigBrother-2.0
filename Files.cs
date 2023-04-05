@@ -1,6 +1,6 @@
 ﻿internal partial class BigBrother
 {
-    private string GetPath(params string[] paths)
+    public string GetPath(params string[] paths)
     {
         string abs_path = localPath;
         foreach (string path in paths)

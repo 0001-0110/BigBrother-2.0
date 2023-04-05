@@ -1,6 +1,18 @@
 ﻿using Discord;
+using Services;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Text.RegularExpressions;
+
+[Table("Tests")]
+internal class Test
+{
+    [Key]
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+}
 
 internal class Reminder
 {
@@ -59,13 +71,11 @@ internal class Reminder
         return $"> {ReminderId}. {DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}: {Text}";
     }
 
-    
-
     // Return this object under a format adapted to save it in a file
     private string ToText()
     {
         // TODO some comments would be nice
-        return $"{DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}\n{UserId}\n{ChannelId}\n{Text}";
+        return String.Join("\n", DateTime.ToString("G", CultureInfo.GetCultureInfo("fr-FR")), UserId, ChannelId, Text);
     }
 
     public void Save(string folderPath)
@@ -88,6 +98,7 @@ internal partial class BigBrother
     private void InitRemindMe()
     {
         LoadReminders();
+        LoadRemindersFromDb();
         commands.Add(new Command("remindme", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
         commands.Add(new Command("reminderlist", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders
@@ -115,6 +126,15 @@ internal partial class BigBrother
             Reminder? newReminder = Reminder.Load(GetPath(REMINDERFOLDER), Path.GetFileName(path));
             if (newReminder != null)
                 reminders.Add(newReminder);
+        }
+    }
+
+    private void LoadRemindersFromDb()
+    {
+        using (DatabaseContext dbContext = new DatabaseContext())
+        {
+            foreach (Test reminder in dbContext.Tests)
+                DebugLog(reminder.Name);
         }
     }
 
