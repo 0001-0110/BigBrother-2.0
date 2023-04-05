@@ -1,5 +1,4 @@
 ﻿using Discord;
-using System.Diagnostics;
 
 internal partial class Extensions
 {
@@ -33,8 +32,9 @@ internal partial class BigBrother
     private async void SendDebugLog(string log)
     {
         // Wait to be ready to send the logs
-        while (!IsReady) 
+        while (!IsReady)
         {
+            // TODO this line is dumping every logs that are created while lauching the app if IsRunning is set to false at the start
             if (!IsRunning)
                 return;
             await Task.Delay(10000);

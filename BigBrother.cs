@@ -23,7 +23,7 @@ internal partial class BigBrother
     {
         Instance = this;
 
-        IsRunning = false;
+        IsRunning = true;
         IsReady = false;
 
         this.localPath = localPath;
@@ -94,6 +94,8 @@ internal partial class BigBrother
 
     private async Task Disconnected(Exception exception)
     {
+        // Just to avoid the warning
+        await Task.Yield();
         DebugLog($"{exception.Source}: {exception.Message}");
     }
 }
