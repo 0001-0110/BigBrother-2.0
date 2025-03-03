@@ -28,7 +28,7 @@ internal partial class BigBrother
     {
         if (channel == null)
             return null;
-        
+
         return await channel.SendMessageAsync(message, isTTS, embed);
     }
 
@@ -80,7 +80,7 @@ internal partial class BigBrother
             // This feature is only available until April 1st 2023
             if (DateTime.Now > new DateTime(2023, 04, 01))
             {
-                await SendMessage(message.Channel, "This feature is no longer available\nUse this instead: https://chat.openai.com/chat");
+                await SendMessage(message.Channel, "This feature is no longer available");
                 return;
             }
 

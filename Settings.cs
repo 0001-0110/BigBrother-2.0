@@ -44,7 +44,7 @@ internal partial class BigBrother
                 [641741839472263176] = AccessLevel.Moderator,
             },
             statusType: ActivityType.Watching,
-            status: "you"
+            status: "you (2.0)"
             );
     }
 }

@@ -21,7 +21,7 @@ internal class GuildSettings
 
 internal partial class BigBrother
 {
-    private const string GUILDSETTINGSFOLDERPATH = "Settings\\GuildSettings";
+    private static readonly string GUILDSETTINGSFOLDERPATH = Path.Combine("Settings", "GuildSettings");
 
     private static Regex[] NonFunnyJokes = new Regex[]
     {

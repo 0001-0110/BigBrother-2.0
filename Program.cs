@@ -1,6 +1,6 @@
 ﻿public static class Program
 {
-    private static string dataFolder = "..\\..\\..\\Data";
+    private static string dataFolder = "Data";
 
     public static async Task Main(string[] args)
     {

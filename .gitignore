@@ -10,3 +10,5 @@
 
 # Data doesn't need to be on the git repo
 /[Dd]ata
+
+*.tar

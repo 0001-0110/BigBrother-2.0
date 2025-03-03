@@ -1,0 +1,7 @@
+services:
+
+  bigbrother:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    #restart: unless-stopped

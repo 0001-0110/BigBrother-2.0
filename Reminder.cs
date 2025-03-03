@@ -98,7 +98,7 @@ internal partial class BigBrother
     private void InitRemindMe()
     {
         LoadReminders();
-        LoadRemindersFromDb();
+        //LoadRemindersFromDb();
         commands.Add(new Command("remindme", " (?:([0-9]+)d)? ?(?:([0-9]+)h)? ?(?:([0-9]+)m)? (.+)", " <duration> <text>` -> Wait `duration` before sending you back `text`", RemindMe));
         commands.Add(new Command("reminderlist", "` -> Display all of your upcoming reminders", SeeReminders));
         // TODO add command to remove reminders

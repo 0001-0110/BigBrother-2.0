@@ -5,9 +5,9 @@ internal partial class BigBrother
 {
     public static BigBrother Instance;
 
-    private const string TOKENFILE = "token.txt";
-    private string localPath;
-    
+    private const string TOKENFILE = "Token.txt";
+    private readonly string localPath;
+
     private bool IsRunning;
     private bool IsReady;
     private DiscordSocketClient client;
