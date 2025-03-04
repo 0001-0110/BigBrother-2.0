@@ -80,6 +80,7 @@ internal partial class BigBrother
         InitBattle();
         InitChess();
         InitHangman();
+        InitTable();
     }
 
     private Command? GetCommand(string message)
