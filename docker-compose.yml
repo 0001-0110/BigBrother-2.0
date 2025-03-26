@@ -1,6 +1,6 @@
 services:
 
-  bigbrother:
+  big-brother:
     build:
       context: ./
       dockerfile: Dockerfile
