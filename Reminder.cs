@@ -181,7 +181,8 @@ internal partial class BigBrother
         Reminder newReminder = new Reminder(reminderDate, message.Author.Id, message.Channel.Id, args[4].Value, GetNewId());
         reminders.Add(newReminder);
         newReminder.Save(GetPath(REMINDERFOLDER));
-        await SendMessage(message.Channel, $"{MentionUtils.MentionUser(message.Author.Id)}: Reminder added for the {reminderDate.ToString("G", CultureInfo.GetCultureInfo("fr-FR"))}");
+        TimestampTag timestamp = new TimestampTag(reminderDate);
+        await SendMessage(message.Channel, $"{MentionUtils.MentionUser(message.Author.Id)}: Reminder added for the {timestamp}");
     }
 
     private async Task SeeReminders(IMessage message, GroupCollection args)
